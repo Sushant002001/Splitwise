@@ -21,7 +21,16 @@ router.post('/', (req, res) => {
       if(result[0][0].password == req.body.password){
         res.cookie('cookie', "admin", { maxAge: 900000, httpOnly: false, path: '/' });
         req.session.user = req.body.email_id;
-  
+        let userObject = {
+          user_id: result[0][0].user_id,
+          email: result[0][0].email_id,
+          password: result[0][0].password,
+          name: result[0][0].user_name,
+          phone: result[0][0].phone,
+          currency: result[0][0].currency,
+          language: result[0][0].language,
+          timezone: result[0][0].timezone
+        }
         res.writeHead(200, {
           'Content-Type': 'text/plain'
         })
