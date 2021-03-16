@@ -7,23 +7,22 @@ import { connect } from 'react-redux';
 import { userLogin } from '../actions/loginUserAction'
 import { Row, Col } from 'react-bootstrap';
 import SplitwiseImage from '../images/logo.svg'
-class Login extends Component {
+class login extends Component {
   //call the constructor method
   constructor(props) {
     //Call the constrictor of Super class i.e The Component
     super(props);
     //maintain the state required for this component
     this.state = {};
-    // this.handleEmailChange = this.handleEmailChange.bind(this);
   }
 
-  handleEmailChange = (e) => {
+  emailChangeHandler = (e) => {
     this.setState({
-      email: e.target.value
+      email_id: e.target.value
     })
   }
 
-  handlePasswordChange = (e) => {
+  passwordChangeHandler = (e) => {
     this.setState({
       password: e.target.value
     })
@@ -32,7 +31,7 @@ class Login extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const data = {
-      email: this.state.email,
+      email_id: this.state.email_id,
       password: this.state.password
     }
 
@@ -48,15 +47,30 @@ class Login extends Component {
     let redirectVar = null;
     let message = ''
     if (this.props.user && this.props.user.user_id) {
-      localStorage.setItem('name', this.props.user.name);
-      localStorage.setItem('email', this.props.user.email);
+      // let userObject = {
+      //   user_id: this.props.user.user_id,
+      //   email_id: this.props.user.email_id,
+      //   username: this.props.user.username,
+      //   phone: this.props.user.phone,
+      //   currency: this.props.user.currency,
+      //   language: this.props.user.language,
+      //   timezone: this.props.user.timezone
+      // }
+      // localStorage.setItem('userObj', JSON.stringify(userObject))
+      // console.log(localStorage.getItem('userObj').user_id)
+      localStorage.setItem('username', this.props.user.username);
+      localStorage.setItem('email_id', this.props.user.email_id);
       localStorage.setItem('user_id', this.props.user.user_id);
+      localStorage.setItem('phone', this.props.user.phone);
+      localStorage.setItem('currency', this.props.user.currency);
+      localStorage.setItem('language', this.props.user.language);
+      localStorage.setItem('timezone', this.props.user.timezone);
       redirectVar = <Redirect to='/home' />
     }
-    else if (this.props.user === 'USER_DOES_NOT_EXISTS' && this.state.login) {
+    else if (this.props.user === 'User Does not Exists' && this.state.login) {
       message = 'User Does Not Exists';
     }
-    else if (this.props.user === 'INCORRECT_PASSWORD' && this.state.login) {
+    else if (this.props.user === 'Incorrect Password' && this.state.login) {
       message = 'Incorrect Password';
     }
     return (
@@ -79,10 +93,10 @@ class Login extends Component {
                     <form onSubmit={this.handleSubmit}>
                       <div style={{ color: '#ff0000' }}>{message}</div><br />
                       <div class='form-group'>
-                        <input type='email' class='form-control' onChange={this.handleEmailChange} name='email' placeholder='Email Id' title='Enter valid email address' required />
+                        <input type='email' class='form-control' onChange={this.emailChangeHandler} name='email_id' placeholder='Email Id' title='Enter valid email address' required />
                       </div>
                       <div class='form-group'>
-                        <input type='password' class='form-control' onChange={this.handlePasswordChange} name='password' placeholder='Password' required />
+                        <input type='password' class='form-control' onChange={this.passwordChangeHandler} name='password' placeholder='Password' required />
                       </div>
                       <button type='submit' class='btn btn-orange btn-large btn-primary'>Login</button><br /><br />
                       {/* <div><center><Link to='/signup'>Create new account</Link></center></div> */}
@@ -99,7 +113,7 @@ class Login extends Component {
   }
 }
 
-Login.propTypes = {
+login.propTypes = {
   userLogin: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired
 }
@@ -111,4 +125,4 @@ const mapState = state => {
   })
 };
 
-export default connect(mapState, { userLogin })(Login);
+export default connect(mapState, { userLogin })(login);

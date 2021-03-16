@@ -11,6 +11,8 @@ const addexpense = require('./routes/addexpense');
 const dashboard = require('./routes/balances');
 const settleup = require('./routes/settleup');
 const recentactivity = require('./routes/recentactivity');
+const upload = require('./routes/imageupload');
+const profile = require('./routes/profile');
 
 app.use('/api/ping', ping);
 app.use('/api/login', login);
@@ -23,6 +25,8 @@ app.use('/api/addexpense', addexpense);
 app.use('/api/dashboard', dashboard);
 app.use('/api/settleup', settleup);
 app.use('/api/recent', recentactivity);
+app.use('/api/imageupload', upload);
+app.use('/api/profile', profile);
 
 
 const port = process.env.PORT || 3001;

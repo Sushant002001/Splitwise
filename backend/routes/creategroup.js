@@ -7,8 +7,7 @@ router.post('/', (req, res) => {
   console.log('Inside Creategroup Post Request');
   console.log('Req Body : ', req.body);
   
-  console.log(req.session.user);
-  let sql = `CALL create_group('${req.session.user}', '${req.body.groupname}');`;
+  let sql = `CALL create_group('${req.body.user_id}', '${req.body.groupname}');`;
 
   pool.query(sql,(err, result) =>{
     if(err){

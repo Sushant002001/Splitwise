@@ -12,25 +12,25 @@ class SignUp extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.handleEmailChange = this.handleEmailChange.bind(this);
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.nameChangeHandler = this.nameChangeHandler.bind(this);
+    this.emailChangeHandler = this.emailChangeHandler.bind(this);
+    this.passwordChangeHandler = this.passwordChangeHandler.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleNameChange = (e) => {
+  nameChangeHandler = (e) => {
     this.setState({
-      name: e.target.value
+      username: e.target.value
     })
   }
 
-  handleEmailChange = (e) => {
+  emailChangeHandler = (e) => {
     this.setState({
-      email: e.target.value
+      email_id: e.target.value
     })
   }
 
-  handlePasswordChange = (e) => {
+  passwordChangeHandler = (e) => {
     this.setState({
       password: e.target.value
     })
@@ -40,8 +40,8 @@ class SignUp extends Component {
     //prevent page from refresh
     e.preventDefault();
     const data = {
-      name: this.state.name,
-      email: this.state.email,
+      username: this.state.username,
+      email_id: this.state.email_id,
       password: this.state.password,
     }
 
@@ -54,8 +54,8 @@ class SignUp extends Component {
 
   handleClear = (e) => {
     this.setState({
-      name: '',
-      email: '',
+      username: '',
+      email_id: '',
       password: ''
     })
   }
@@ -64,7 +64,7 @@ class SignUp extends Component {
     let redirectVar = null;
     let message = '';
     console.log(this.props.user, this.state.signUp)
-    if (localStorage.getItem('email')) {
+    if (localStorage.getItem('email_id')) {
       redirectVar = <Redirect to='/home' />
     }
     
@@ -93,17 +93,17 @@ class SignUp extends Component {
             <Form>
             <Form.Group controlId='formBasicName'>
                 <Form.Label>Full Name</Form.Label>
-                <Form.Control type='email' name='name' value={this.state.name} placeholder='Enter Name' onChange={this.handleNameChange} required />
+                <Form.Control type='email' name='username' value={this.state.username} placeholder='Enter Name' onChange={this.nameChangeHandler} required />
               </Form.Group>
 
               <Form.Group controlId='formBasicEmail'>
                 <Form.Label>Email address</Form.Label>
-                <Form.Control type='email' name='email' value={this.state.email} placeholder='Enter email' onChange={this.handleEmailChange} required />
+                <Form.Control type='email' name='email_id' value={this.state.email_id} placeholder='Enter email' onChange={this.emailChangeHandler} required />
               </Form.Group>
 
               <Form.Group controlId='formBasicPassword'>
                 <Form.Label>Password</Form.Label>
-                <Form.Control type='password' name='password' value={this.state.password} placeholder='Password' onChange={this.handlePasswordChange} required />
+                <Form.Control type='password' name='password' value={this.state.password} placeholder='Password' onChange={this.passwordChangeHandler} required />
               </Form.Group>
 
               <Button variant="success" onClick={this.handleSubmit}>

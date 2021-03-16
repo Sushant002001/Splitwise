@@ -13,6 +13,7 @@ CREATE TABLE `users`(
     `language` VARCHAR(10) DEFAULT 'ENG',
     `currency` VARCHAR(3) DEFAULT NULL,
     `timezone` VARCHAR(255) DEFAULT NULL,
+    `profile_image` VARCHAR(255),
     PRIMARY KEY (`user_id`),
     UNIQUE KEY `email_id_UNIQUE` (`email_id`)
 );
@@ -22,6 +23,7 @@ DROP TABLE IF EXISTS `groups`;
 CREATE TABLE `groups`(
     `group_id` INT(10) NOT NULL AUTO_INCREMENT,
     `group_name` VARCHAR(255) NOT NULL,
+    `group_image` VARCHAR(255),
     PRIMARY KEY (`group_id`),
     UNIQUE KEY `group_name_UNIQUE` (`group_name`)
 );
@@ -105,12 +107,11 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `create_group`;
 DELIMITER ;;
 CREATE PROCEDURE `create_group` (
-    _email_id VARCHAR(255),
+    _user_id INT,
     _group_name VARCHAR(255)
 )
 BEGIN
     DECLARE _group_id INT;
-    DECLARE _user_id INT;
     IF EXISTS(SELECT group_name FROM groups WHERE group_name = TRIM(_group_name)) THEN
         SELECT 0 AS status;
         -- SELECT group_id INTO _group_id FROM groups WHERE group_name = TRIM(in_group_name);
@@ -118,7 +119,6 @@ BEGIN
     ELSE
         INSERT INTO groups (group_name) VALUES (_group_name);
         SELECT group_id INTO _group_id FROM groups WHERE group_name = _group_name;
-        SELECT user_id INTO _user_id FROM users WHERE email_id = _email_id;
         INSERT INTO groups_users (user_id, group_id, is_member) VALUES (_user_id, _group_id, 'Y');
         SELECT 1 AS status;
     END IF;
@@ -336,5 +336,40 @@ BEGIN
     ) gu_count ON b.group_id = gu_count.group_id
     WHERE u.user_id = _user_id
     ORDER BY b.time_added DESC ;
+END ;;
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS `get_profile`;
+DELIMITER ;;
+CREATE PROCEDURE `get_profile` (
+    _user_id  INT
+)
+BEGIN
+    SELECT user_id, email_id, password, user_name, phone, currency, language, timezone FROM users WHERE user_id = _user_id;
+    SELECT 1 as status;
+END ;;
+DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `update_profile`;
+DELIMITER ;;
+CREATE PROCEDURE `update_profile` (
+    _user_id  INT,
+    _user_name VARCHAR(255),
+    _email_id VARCHAR(255),
+    _phone VARCHAR(15),
+    _currency VARCHAR(3),
+    _language VARCHAR(255),
+    _timezone VARCHAR(255)
+)
+BEGIN
+    DECLARE num_users INT;
+    SELECT COUNT(1) INTO num_users FROM users WHERE user_id = _user_id;
+    IF num_users > 0 THEN
+        UPDATE users SET email_id = _email_id, user_name = _user_name, phone = _phone, currency = _currency, language = _language, timezone = _timezone WHERE user_id = _user_id;
+        SELECT 1 AS status FROM users;
+    ELSE
+        SELECT 0 AS status;
+    END IF;
 END ;;
 DELIMITER ;

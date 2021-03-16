@@ -10,7 +10,7 @@ class NavBar extends Component {
   constructor() {
     super();
     this.state = {
-      name: localStorage.getItem("name")
+      username: localStorage.getItem("username")
     }
   }
 
@@ -22,17 +22,17 @@ class NavBar extends Component {
 
   render() {
     let navUser = null;
-    let nameDropDown = null;
+    let nameDropDown = "USER";
 
     nameDropDown = (
       <Dropdown>
         <Dropdown.Toggle variant="success" id="dropdown-basic">
-          <Image src={userIcon} style={{width:20, height:'auto'}} /> &nbsp; &nbsp; Hi, {this.state.name}!
+          <Image src={userIcon} style={{width:20, height:'auto'}} /> &nbsp; &nbsp; Hi, {this.state.username}!
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
           <Dropdown.Item><Link to="/profile" className="nav-link">Your Account</Link></Dropdown.Item>
-          <Dropdown.Item><Link to="/profile" className="nav-link">Create a Group</Link></Dropdown.Item>
+          <Dropdown.Item><Link to="/creategroup" className="nav-link">Create a Group</Link></Dropdown.Item>
           <Dropdown.Item><Link to="/" className="nav-link" onClick={this.handleLogout}>Log out</Link></Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>

@@ -12,10 +12,10 @@ router.post('/', (req, res) => {
 
   pool.query(sql,(err, result) =>{
     if(err){
-      // res.writeHead(500, {
-      //   'Content-Type': 'text/plain'
-      //   });
-      //   res.send(err);
+      res.writeHead(500, {
+        'Content-Type': 'text/plain'
+        });
+        res.send(err);
       console.log(err)
     }
     console.log(result)

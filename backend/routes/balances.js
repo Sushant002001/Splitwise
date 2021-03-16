@@ -15,6 +15,7 @@ router.get('/', async (req, res) => {
   const balances = [];
   pool2.query(getRestUsersSql)
     .then((rows) => {
+      console.log(rows)
       const promiseList = rows[0].map((row) => new Promise((resolve, reject) => pool2.query(balancesSql, [row.owed_user_id, row.owed_user_id])
         .then((subRows) => {
           subRows[0].map((subRow) => {

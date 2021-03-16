@@ -20,13 +20,13 @@ router.post('/', (req, res) => {
         res.writeHead(200, {
           'Content-Type': 'text/plain'
         })
-        res.end("NEW USER CREATED");
+        res.end("NEW_USER_CREATED");
       }
     else if(result && result.length > 0 && result[0][0].status==0){
         res.writeHead(401, {
           'Content-Type': 'text/plain'
         })
-        res.end("USER ALREADY EXISTS");
+        res.end("USER_ALREADY_EXISTS");
       }
   })
 });

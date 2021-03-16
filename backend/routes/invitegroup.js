@@ -23,15 +23,12 @@ router.post('/', (req, res) => {
       res.writeHead(200, {
         'Content-Type': 'text/plain'
       })
-      console.log(result[0][0].status);
       res.end(result[0][0].status);
     }
     else if(result && result.length > 0 && result[0][0].status!= 'INVITATION SENT TO THE USER'){
       res.writeHead(401, {
         'Content-Type': 'text/plain'
       })
-      console.log("fail")
-      console.log(result[0][0].status);
       res.end(result[0][0].status);
     }
 
