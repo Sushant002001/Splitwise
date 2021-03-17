@@ -3,14 +3,13 @@ import { Redirect } from 'react-router';
 // import { Link } from 'react-router-dom';
 import NavBar from './NavBar';
 import SplitwiseImage from '../images/logo.svg'
-import apiHost from '../config.js';
 
 
 
 import '../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
-import { Row, Col, Navbar, Nav, Dropdown, Image, Container, Form, FormGroup, Button, Card } from 'react-bootstrap';
+import { Row, Col, Navbar, Nav, Table, Image, Container, Form, FormGroup, Button, Card, Jumbotron } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import splitwiseLogo from "../images/splitwise.svg";
 import userIcon from "../images/sp-ellie.svg";
@@ -22,7 +21,6 @@ import { userLogin } from '../actions/loginUserAction'
 class groupdetails extends Component {
     constructor(props){
         super(props);
-        console.log(this.props.location.state)
         this.state =  this.props.location.state
     }
 
@@ -51,9 +49,50 @@ class groupdetails extends Component {
     
   render() {
     return (
-      <div className="m-2">
-          {this.state.groupname}
-    </div>
+      <div>
+      <NavBar/>
+      <div className="mt-5">
+        <Row>
+            <Col>
+            {'\u00A0'}
+            </Col>
+        </Row>
+          <Row>
+          <Col xs lg="4">{'\u00A0'}</Col>
+          <h5>{this.state.groupname}</h5>
+          <Table striped bordered hover variant="dark">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>@mdo</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>@fat</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td colSpan="2">Larry the Bird</td>
+                <td>@twitter</td>
+              </tr>
+            </tbody>
+          </Table>
+              
+          </Row> 
+      </div>
+      </div>
     )
   }
 }

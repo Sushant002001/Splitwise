@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
+import { Link } from 'react-router-dom';
 // import { Link } from 'react-router-dom';
 import NavBar from './NavBar';
 import SplitwiseImage from '../images/logo.svg'
@@ -22,7 +23,7 @@ class displaygroup extends Component {
     constructor(props){
         super(props);
         this.state = {  
-            groupname: this.props.groupname,
+            groupname: this.props.userGroups.groupname,
             user_id: localStorage.getItem('user_id'),
         }
     }
@@ -43,7 +44,10 @@ class displaygroup extends Component {
           <Card style={{ width: '18rem' }}>
             <Card.Body>
                 <Card.Title>{this.state.groupname}</Card.Title>
-                <Card.Link href="./groupdetails" onClick={this.detailsSubmit}>View Details</Card.Link>
+                <Link to={{ pathname: '/groupdetails', state: { groupname: this.props.userGroups.groupname } }}>
+                <Button variant="link">View Details</Button>
+                </Link>
+                {/* <Card.Link href="./groupdetails" onClick={this.detailsSubmit}>View Details</Card.Link> */}
             </Card.Body>
         </Card>
     </div>

@@ -34,12 +34,13 @@ class mygroups extends Component {
         };
     }
 
-    onChange = (e) => {
-        this.setState({
-            [e.target.name] : e.target.value
-        })
-    }
+    // onChange = (e) => {
+    //     this.setState({
+    //         [e.target.name] : e.target.value
+    //     })
+    // }
 
+    
     componentDidMount(){
         axios.get(`${apiHost}/api/mygroups/${this.state.user_id}`).then((response) => {
                 //update the state with the response data
@@ -48,7 +49,7 @@ class mygroups extends Component {
                         const group = {
                             groupname: res.group_name,
                             // group_image: res.group_image,
-                            // is_member: res.is_member,
+                            is_member: res.is_member,
                             }
                         const grplist = [...this.state.Usergroups, group];
                         this.setState({ Usergroups: grplist });
@@ -57,7 +58,7 @@ class mygroups extends Component {
                         const invitegroup = {
                             groupname: res.group_name,
                             // group_image: res.group_image,
-                            // is_member: res.is_member,
+                            is_member: res.is_member,
                             }
                         const invitegrplist = [...this.state.Userinvitegroups, invitegroup];
                         this.setState({ Userinvitegroups: invitegrplist });
@@ -67,24 +68,25 @@ class mygroups extends Component {
             })
     }
 
-    onUpdateInvitation = (incomingGroupInvite) => {
-        // console.log(`Incoming Group : ${JSON.stringify(incomingGroupInvite)}`);
-        // console.log('Reached in Parent onUpdate');
-        let newGroupInvites = this.state.groupInvites;
-        // console.log(`Before deleting: ${JSON.stringify(newGroupInvites)}`);
-        // const deleteGroupInvite = newGroupInvites.find((groupInvite) => groupInvite.group_name === incomingGroupInvite.group_name);
-        newGroupInvites = newGroupInvites.filter((gI) => gI.group_name !== incomingGroupInvite.group_name);
-        incomingGroupInvite.is_member = 'Y';
-        const newGroupMembers = [...this.state.groupMemberships, incomingGroupInvite];
-        // const index = newGroupInvites.indexOf(deleteGroupInvite);
-        // newGroupInvites.splice(index, 1);
-        console.log(`After deleting: ${JSON.stringify(newGroupInvites)}`);
+    onUpdateInvitation = (incomingGroupAccept) => {
+
+        let newUserInvitationGroup = this.state.Userinvitegroups;
+
+        console.log(incomingGroupAccept.groupname);
+       
+        newUserInvitationGroup = newUserInvitationGroup.filter((ng) => ng.groupname !== incomingGroupAccept.groupname);
+        console.log(newUserInvitationGroup)
+        incomingGroupAccept.is_member='Y'
+        const Groupmem = [...this.state.Usergroups, incomingGroupAccept];
+
+        
         this.setState({
-          groupInvites: newGroupInvites,
-          groupMemberships: newGroupMembers,
+            Usergroups: Groupmem,
+            Userinvitegroups: newUserInvitationGroup,
         });
-        // console.log(`After deleting invite state: ${JSON.stringify(this.state.groupInvites)}`);
-        // console.log(`After deleting member state: ${JSON.stringify(this.state.groupMemberships)}`);
+        
+        console.log(`After deleting member state: ${JSON.stringify(this.state.Usergroups)}`);
+        console.log(`After deleting invite state: ${JSON.stringify(this.state.Userinvitegroups)}`);
       }
 
     // submitGroup = (e)=>{
@@ -117,14 +119,14 @@ class mygroups extends Component {
     // }
 
   render() {
-      const userGroups = [];
-      for (let i = 1; i <= this.state.Usergroups.length; i += 1) {
-        userGroups.push(<Displaygroup groupname={this.state.Usergroups[i-1].groupname} />);
-      }
-      const userinviteGroups = [];
-      for (let i = 1; i <= this.state.Userinvitegroups.length; i += 1) {
-        userinviteGroups.push(<Displayinvitegroup groupname={this.state.Userinvitegroups[i-1].groupname} onUpdateInvitation={this.onUpdateInvitation}/>);
-      }
+    //   const userGroups = [];
+    //   for (let i = 1; i <= this.state.Usergroups.length; i += 1) {
+    //     userGroups.push(<Displaygroup groupname={this.state.Usergroups[i-1].groupname} />);
+    //   }
+    //   const userinviteGroups = [];
+    //   for (let i = 1; i <= this.state.Userinvitegroups.length; i += 1) {
+    //     userinviteGroups.push(<Displayinvitegroup groupname={this.state.Userinvitegroups[i-1].groupname} onUpdateInvitation={this.onUpdateInvitation}/>);
+    //   }
 
     return (
       <div>
@@ -136,7 +138,12 @@ class mygroups extends Component {
                     My Groups
                 </h4>
                 <div className=" d-flex flex-column">
-                    {userGroups}
+                    {this.state.Usergroups.map((userGroups) => (
+                    <Displaygroup
+                      key={userGroups}
+                      userGroups={userGroups}
+                    />
+                  ))}
                 </div>
             </Col>
             <Col sm={1}></Col>
@@ -145,7 +152,13 @@ class mygroups extends Component {
                     Pending Invites
                 </h4>
                 <div className=" d-flex flex-column">
-                    {userinviteGroups}
+                    {this.state.Userinvitegroups.map((userinviteGroups) => (
+                        <Displayinvitegroup
+                        
+                        userinviteGroups={userinviteGroups}
+                        onUpdateInvitation={this.onUpdateInvitation}
+                        />
+                    ))}
                 </div>
             </Col>
         </Row>

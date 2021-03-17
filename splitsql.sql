@@ -168,7 +168,8 @@ CREATE PROCEDURE `group_invite_accept` (
     -- in_group_image VARCHAR(255)
 )
 BEGIN
-    UPDATE groups_users SET is_member = 'Y' WHERE user_id = _user_id;
+    UPDATE groups_users SET is_member = 'Y' WHERE user_id = _user_id AND 
+    group_id = (SELECT group_id from groups WHERE group_name = _group_name);
     SELECT "INVITATION ACCEPTED" AS status;
     
 END ;;

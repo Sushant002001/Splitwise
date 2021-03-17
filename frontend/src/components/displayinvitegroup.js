@@ -22,7 +22,7 @@ class displayinvitegroup extends Component {
     constructor(props){
         super(props);
         this.state = {  
-            groupname: this.props.groupname,
+            groupname: this.props.userinviteGroups.groupname,
             user_id: localStorage.getItem('user_id'),
         }
     }
@@ -44,30 +44,25 @@ class displayinvitegroup extends Component {
         axios.post(`${apiHost}/api/acceptinvite`,data)
             .then((response) => {
                 console.log("Status Code : ",response.status)
-                alert(response.data)
+                // alert(response.data)
                 // this.setState({
                 //     message: response.data.message,
                 //     // acceptedGroupName: this.state.group_ame,
                 // });
-                this.props.onUpdateInvitation(this.props.groupInvite);
+                this.props.onUpdateInvitation(this.props.userinviteGroups);
                 // window.location.reload(false);
                 }).catch((err) => {
                     alert(err.response.data);
                   });
     }
-    componentDidMount(){
-        axios.get(`${apiHost}/api/mygroups/${this.state.user_id}`).then((response) => {
-                //update the state with the response data
-                console.log("Status Code : ",response.status)
-            });
-        }
   render() {
+      console.log("here")
     return (
       <div className="m-2">
           <Card style={{ width: '18rem' }}>
             <Card.Body>
                 <Card.Title>{this.state.groupname}</Card.Title>
-                <Card.Link onClick={this.acceptSubmit}>Accept</Card.Link>
+                <Button onClick={this.acceptSubmit}>Accept</Button>
             </Card.Body>
         </Card>
     </div>
