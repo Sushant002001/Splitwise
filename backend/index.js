@@ -13,6 +13,7 @@ const settleup = require('./routes/settleup');
 const recentactivity = require('./routes/recentactivity');
 const upload = require('./routes/imageupload');
 const profile = require('./routes/profile');
+const mygroups = require('./routes/mygroups');
 
 app.use('/api/ping', ping);
 app.use('/api/login', login);
@@ -27,6 +28,7 @@ app.use('/api/settleup', settleup);
 app.use('/api/recent', recentactivity);
 app.use('/api/imageupload', upload);
 app.use('/api/profile', profile);
+app.use('/api/mygroups', mygroups);
 
 
 const port = process.env.PORT || 3001;

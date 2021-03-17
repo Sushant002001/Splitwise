@@ -158,38 +158,16 @@ sp: BEGIN
 END ;;
 DELIMITER ;
 
-DROP PROCEDURE IF EXISTS `display_group_invite`;
-DELIMITER ;;
-CREATE PROCEDURE `display_group_invite` (
-    _email_id VARCHAR(255)
-)
-BEGIN
-    DECLARE _user_id INT;
 
-    SELECT user_id INTO _user_id FROM users WHERE email_id = _email_id;
-    SELECT group_name 
-    FROM groups 
-    WHERE group_id IN (
-        SELECT group_id 
-        FROM groups_users 
-        WHERE user_id = _user_id 
-        AND is_member = 'N'
-    );
-    
-END ;;
-DELIMITER ;
 
 DROP PROCEDURE IF EXISTS `group_invite_accept`;
 DELIMITER ;;
 CREATE PROCEDURE `group_invite_accept` (
-    _email_id VARCHAR(255),
+    _user_id INT,
     _group_name VARCHAR(255)
     -- in_group_image VARCHAR(255)
 )
 BEGIN
-    DECLARE _user_id INT;
-
-    SELECT user_id INTO _user_id FROM users WHERE email_id = _email_id;
     UPDATE groups_users SET is_member = 'Y' WHERE user_id = _user_id;
     SELECT "INVITATION ACCEPTED" AS status;
     
@@ -373,3 +351,56 @@ BEGIN
     END IF;
 END ;;
 DELIMITER ;
+
+
+DROP PROCEDURE IF EXISTS `get_groups`;
+DELIMITER ;;
+CREATE PROCEDURE `get_groups` (
+    _user_id INT
+)
+BEGIN
+    
+    SELECT g.group_name, gu.is_member
+    FROM groups g JOIN groups_users gu
+    ON g.group_id = gu.group_id
+    WHERE gu.user_id = _user_id;
+    SELECT 1 AS status;
+    
+END ;;
+DELIMITER ;
+
+
+-- DROP PROCEDURE IF EXISTS `get_groups`;
+-- DELIMITER ;;
+-- CREATE PROCEDURE `get_groups` (
+--     _user_id INT
+-- )
+-- BEGIN
+--     SELECT group_name, is_member
+--         FROM groups 
+--         WHERE group_id IN (
+--             SELECT group_id 
+--             FROM groups_users 
+--             WHERE user_id = _user_id 
+--         );
+--     SELECT 1 AS status;
+-- END ;;
+-- DELIMITER ;
+
+-- DROP PROCEDURE IF EXISTS `display_group_invite`;
+-- DELIMITER ;;
+-- CREATE PROCEDURE `display_group_invite` (
+--     _user_id INT,
+-- )
+-- BEGIN
+--     SELECT group_name 
+--     FROM groups 
+--     WHERE group_id IN (
+--         SELECT group_id 
+--         FROM groups_users 
+--         WHERE user_id = _user_id 
+--         AND is_member = 'N'
+--     );
+    
+-- END ;;
+-- DELIMITER ;

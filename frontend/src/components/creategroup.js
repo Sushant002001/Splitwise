@@ -4,6 +4,7 @@ import { Redirect } from 'react-router';
 import NavBar from './NavBar';
 import SplitwiseImage from '../images/logo.svg'
 import InviteUser from './userinvite';
+import apiHost from '../config.js';
 
 
 import '../App.css';
@@ -48,7 +49,7 @@ class creategroup extends Component {
         //set the with credentials to true
         axios.defaults.withCredentials = true;
         //make a post request with the user data
-        axios.post('http://localhost:3001/api/creategroup',data)
+        axios.post(`${apiHost}/api/creategroup`,data)
             .then((response) => {
                 console.log("Status Code : ",response.status)
                 alert(response.data)

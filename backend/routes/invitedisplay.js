@@ -4,10 +4,10 @@ const pool = require('../pool.js');
 
 
 
-router.get('/', (req, res) => {
+router.get('/:user_id', (req, res) => {
   console.log('Inside displayinvite Post Request');
   
-  let sql = `CALL display_group_invite('${req.session.user}');`;
+  let sql = `CALL display_group_invite('${req.params.user_id}');`;
 
   pool.query(sql,(err, result) =>{
     if(err){

@@ -6,6 +6,8 @@ import home from './home';
 import LandingPage from './LandingPage';
 import profile from './profile';
 import creategroup from './creategroup';
+import mygroups from './mygroups';
+import groupdetails from './groupdetails';
 
 class Main extends Component {
   render() {
@@ -17,6 +19,8 @@ class Main extends Component {
         <Route path='/home' component={home} />
         <Route path='/profile' component={profile} />
         <Route path='/creategroup' component={creategroup} />
+        <Route path='/mygroups' component={mygroups} />
+        <Route path='/groupdetails' component={groupdetails} />
       </div>
     )
   }

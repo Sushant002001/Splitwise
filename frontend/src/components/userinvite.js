@@ -3,6 +3,7 @@ import { Redirect } from 'react-router';
 // import { Link } from 'react-router-dom';
 import NavBar from './NavBar';
 import SplitwiseImage from '../images/logo.svg'
+import apiHost from '../config.js';
 
 
 import '../App.css';
@@ -40,7 +41,7 @@ class userinvite extends Component {
             userame: this.state.username,
           };
 
-        axios.post('http://localhost:3001/api/invitegroup',data)
+        axios.post(`${apiHost}/api/invitegroup`,data)
             .then((response) => {
                 console.log("Status Code : ",response.status)
                 alert(response.data)

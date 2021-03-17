@@ -8,7 +8,7 @@ router.post('/', (req, res) => {
   console.log('Inside acceptInvite Post Request');
   console.log('Req Body : ', req.body);
   
-  let sql = `CALL group_invite_accept('${req.session.user}', '${req.body.groupname}');`;
+  let sql = `CALL group_invite_accept('${req.body.user_id}', '${req.body.groupname}');`;
 
   pool.query(sql,(err, result) =>{
     if(err){

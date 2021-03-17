@@ -33,6 +33,7 @@ class NavBar extends Component {
         <Dropdown.Menu>
           <Dropdown.Item><Link to="/profile" className="nav-link">Your Account</Link></Dropdown.Item>
           <Dropdown.Item><Link to="/creategroup" className="nav-link">Create a Group</Link></Dropdown.Item>
+          <Dropdown.Item><Link to="/mygroups" className="nav-link">My Groups</Link></Dropdown.Item>
           <Dropdown.Item><Link to="/" className="nav-link" onClick={this.handleLogout}>Log out</Link></Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>

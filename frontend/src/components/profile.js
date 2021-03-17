@@ -13,6 +13,7 @@ import NavBar from './NavBar';
 import { userLogin } from '../actions/loginUserAction'
 import { Row, Col } from 'react-bootstrap';
 import SplitwiseImage from '../images/logo.svg';
+import apiHost from '../config.js';
 
 
 class profile extends Component {
@@ -47,7 +48,7 @@ class profile extends Component {
         //set the with credentials to true
         axios.defaults.withCredentials = true;
         //make a post request with the user data
-        axios.put('http://localhost:3001/api/profile',data)
+        axios.put(`${apiHost}/api/profile`,data)
             .then(response => {
                 console.log("Status Code : ",response.status);
                 if(response.status === 200){
@@ -67,7 +68,7 @@ class profile extends Component {
 
     //get the books data from backend  
     componentDidMount(){
-        axios.get(`http://localhost:3001/api/profile/${this.state.user_id}`).then((response) => {
+        axios.get(`${apiHost}/api/profile/${this.state.user_id}`).then((response) => {
                 //update the state with the response data
                 const profile = response.data
                 this.setState(
