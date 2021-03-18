@@ -10,6 +10,7 @@ import apiHost from '../config.js';
 import YouOwe from './Youowe';
 import YouareOwed from './Youareowed';
 import GroupNav from './groupNav';
+import SettleUpButton from './settleUpButton';
 // import { Text} from 'react-native';
 
 class Home extends Component {
@@ -18,17 +19,18 @@ class Home extends Component {
     this.state={
       user_id: localStorage.getItem('user_id'),
       groups:[],
-      balances:[]
+      balances:[],
+      showSettle: false
     }
   }
 
-  componentDidMount(){
-    this.getGroups();
-    this.getBalances();
+  async componentDidMount(){
+    await this.getGroups();
+    await this.getBalances();
   }
 
-  getGroups = ()=>{
-    axios.get(`${apiHost}/api/mygroups/${this.state.user_id}`).then((response) => {
+  getGroups = async()=>{
+    await axios.get(`${apiHost}/api/mygroups/${this.state.user_id}`).then((response) => {
       //update the state with the response data
     response.data.map((res) => {
         if( res.is_member=='Y'){
@@ -44,13 +46,14 @@ class Home extends Component {
     });
   }
 
-  getBalances = ()=>{
-    axios.get(`${apiHost}/api/dashboard/${this.state.user_id}`).then((response) => {
+  getBalances = async()=>{
+    await axios.get(`${apiHost}/api/dashboard/${this.state.user_id}`).then((response) => {
       //update the state with the response data
     response.data.message.map((res) => {
           const balance = {
               amount: res.net_amt,
               user_name2: res.user2_name,
+              user_id2:res.user2,
               pay_or_collect: res.collect_or_pay
               }
           const balanceList = [...this.state.balances, balance];
@@ -59,15 +62,38 @@ class Home extends Component {
     });
   }
 
-  render() {
+  showmodal = () =>{
+    this.setState({
+      showSettle: true,
+    })
+  }
 
+  hidemodal = () =>{
+    this.setState({
+      showSettle: false,
+      balances:[]
+    })
+    this.getBalances();
+  }
+
+  render() {
+    // this.getBalances();
     console.log(this.state.balances)
     let oweBalance=[]
     let owedBalance=[]
     let usergroups=[]
     var youOwe=0;
     var youareOwed=0;
+    let settleup=[];
 
+    if(this.state && this.state.balances && this.state.balances.length>0){
+      const settle=(<SettleUpButton
+        show={this.state.showSettle}
+        handleClose={this.hidemodal}
+        balances={this.state.balances}
+      />);
+      settleup.push(settle);
+    }
     if(this.state && this.state.balances && this.state.balances.length>0){
       this.state.balances.map((balance)=>{
         if(balance.pay_or_collect=="COLLECT"){
@@ -137,6 +163,8 @@ class Home extends Component {
             {/* <Col xs lg="1">{'\u00A0'}</Col> */}
             <Col md={4}>
               <h3>Dashboard</h3>
+              {settleup}
+            <Button variant="success" onClick={this.showmodal}>Settle Up</Button>
               <Row>
               <ListGroup horizontal style={{minWidth:'100%'}}>
                 <ListGroup.Item as={Col}>Total Balance

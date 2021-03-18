@@ -24,6 +24,8 @@ class recentactivity extends Component {
         super(props);
         this.state={
             user_id: localStorage.getItem('user_id'),
+            usertransactions:[],
+            order:"DESC"
         }
     }
 
@@ -44,9 +46,23 @@ class recentactivity extends Component {
       });
     }
    
-    // sortSubmit=() =>{
-    //   e.preventDefault();
-    // }
+    sortSubmit=(e) =>{
+      e.preventDefault();
+  
+      if(this.state.order==="DESC" && e.target.value ==="ASCE"){
+        this.setState({
+          usertransactions: this.state.usertransactions.reverse(),
+          order:"ASCE"
+        })
+      }
+      else if(this.state.order==="ASCE" && e.target.value ==="DESC"){
+        this.setState({
+          usertransactions: this.state.usertransactions.reverse(),
+          order:"DESC"
+        })
+      }
+
+    }
     
   render() {
     
@@ -76,8 +92,8 @@ class recentactivity extends Component {
           <h5>RECENT ACTIVITY</h5>  
           <Col xs lg="2">{'\u00A0'}</Col>
           <DropdownButton id="dropdown-item-button" title="SORT">
-            <Dropdown.Item as="button" value="ASEC" onClick={this.sortSubmit}>ASEC</Dropdown.Item>
-            <Dropdown.Item as="button" value="ASEC" onClick={this.sortSubmit}>DESC </Dropdown.Item>
+            <Dropdown.Item as="button" value="ASCE" onClick={this.sortSubmit}>ASEC</Dropdown.Item>
+            <Dropdown.Item as="button" value="DESC" onClick={this.sortSubmit}>DESC </Dropdown.Item>
   
           </DropdownButton>
           </Row> 
