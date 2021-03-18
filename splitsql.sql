@@ -620,5 +620,3 @@ BEGIN
     final2.net_amt;
 END //
 DELIMITER ;
-
-

@@ -10,7 +10,7 @@ import apiHost from '../config.js'
 import '../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
-import { Row, Col, Navbar, Nav, ListGroup, Button, Card, Jumbotron } from 'react-bootstrap';
+import { Row, Col, DropdownButton, Dropdown, ListGroup, Button, Card, Jumbotron } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import splitwiseLogo from "../images/splitwise.svg";
 import userIcon from "../images/sp-ellie.svg";
@@ -43,21 +43,9 @@ class recentactivity extends Component {
             console.log(err)
       });
     }
-    // acceptSubmit = (e)=>{
-    //     e.preventDefault();
-        
-    //     const data = {
-    //         groupname: this.state.groupname,
-    //         user_id: this.state.user_id,
-    //       };
-
-    //     axios.post('http://localhost:3001/api/acceptinvite',data)
-    //         .then((response) => {
-    //             console.log("Status Code : ",response.status)
-    //             alert(response.data)
-    //             }).catch((err) => {
-    //                 alert(err.response.data);
-    //               });
+   
+    // sortSubmit=() =>{
+    //   e.preventDefault();
     // }
     
   render() {
@@ -86,6 +74,12 @@ class recentactivity extends Component {
           <Row>
           <Col xs lg="3">{'\u00A0'}</Col>
           <h5>RECENT ACTIVITY</h5>  
+          <Col xs lg="2">{'\u00A0'}</Col>
+          <DropdownButton id="dropdown-item-button" title="SORT">
+            <Dropdown.Item as="button" value="ASEC" onClick={this.sortSubmit}>ASEC</Dropdown.Item>
+            <Dropdown.Item as="button" value="ASEC" onClick={this.sortSubmit}>DESC </Dropdown.Item>
+  
+          </DropdownButton>
           </Row> 
         <Row>
         <Col xs lg="3">{'\u00A0'}</Col>
