@@ -34,89 +34,44 @@ class mygroups extends Component {
         };
     }
 
-    // onChange = (e) => {
-    //     this.setState({
-    //         [e.target.name] : e.target.value
-    //     })
-    // }
-
-    
     componentDidMount(){
-        axios.get(`${apiHost}/api/mygroups/${this.state.user_id}`).then((response) => {
+        this.getmygroups();
+    }
+    
+    getmygroups =async()=>{
+        await axios.get(`${apiHost}/api/mygroups/${this.state.user_id}`).then((response) => {
                 //update the state with the response data
-                response.data.map((res) => {
-                    if( res.is_member=='Y'){
-                        const group = {
-                            groupname: res.group_name,
-                            // group_image: res.group_image,
-                            is_member: res.is_member,
-                            }
-                        const grplist = [...this.state.Usergroups, group];
-                        this.setState({ Usergroups: grplist });
-                    }
-                    else if( res.is_member=='N'){
-                        const invitegroup = {
-                            groupname: res.group_name,
-                            // group_image: res.group_image,
-                            is_member: res.is_member,
-                            }
-                        const invitegrplist = [...this.state.Userinvitegroups, invitegroup];
-                        this.setState({ Userinvitegroups: invitegrplist });
+            response.data.map((res) => {
+                if( res.is_member=='Y'){
+                    const group = {
+                        groupname: res.group_name,
+                        // group_image: res.group_image,
+                        is_member: res.is_member,
+                        }
+                    const grplist = [...this.state.Usergroups, group];
+                    this.setState({ Usergroups: grplist });
+                }
+                else if( res.is_member=='N'){
+                    const invitegroup = {
+                        groupname: res.group_name,
+                        // group_image: res.group_image,
+                        is_member: res.is_member,
+                        }
+                    const invitegrplist = [...this.state.Userinvitegroups, invitegroup];
+                    this.setState({ Userinvitegroups: invitegrplist });
 
-                    }
-                })
+                }
+            })
             })
     }
 
-    onUpdateInvitation = (incomingGroupAccept) => {
-
-        let newUserInvitationGroup = this.state.Userinvitegroups;
-
-        console.log(incomingGroupAccept.groupname);
-       
-        newUserInvitationGroup = newUserInvitationGroup.filter((ng) => ng.groupname !== incomingGroupAccept.groupname);
-        console.log(newUserInvitationGroup)
-        incomingGroupAccept.is_member='Y'
-        const Groupmem = [...this.state.Usergroups, incomingGroupAccept];
-
-        
+    onUpdateInvitation = () => {
         this.setState({
-            Usergroups: Groupmem,
-            Userinvitegroups: newUserInvitationGroup,
-        });
-        
-        console.log(`After deleting member state: ${JSON.stringify(this.state.Usergroups)}`);
-        console.log(`After deleting invite state: ${JSON.stringify(this.state.Userinvitegroups)}`);
+            Usergroups: [],
+            Userinvitegroups:[],
+        })
+        this.getmygroups()
       }
-
-    // submitGroup = (e)=>{
-    //     var headers = new Headers();
-    //     e.preventDefault();
-        
-    //     const data ={ 
-    //         user_id : this.state.user_id,
-    //         groupname : this.state.groupname
-    //     };
-    //     console.log(data)
-    //     //set the with credentials to true
-    //     axios.defaults.withCredentials = true;
-    //     //make a post request with the user data
-    //     axios.post('http://localhost:3001/api/creategroup',data)
-    //         .then((response) => {
-    //             console.log("Status Code : ",response.status)
-    //             alert(response.data)
-    //             }).catch((err) => {
-    //                 alert(err.response.data);
-    //         });
-    // }
-
-    // addUser =(e)=>{
-    //     this.setState((prevState) => ({memberList: prevState.memberList+1}));
-    // }
-
-    // deleteUser =(e)=>{
-    //     this.setState((prevState) => ({memberList: prevState.memberList-1}));
-    // }
 
   render() {
     //   const userGroups = [];

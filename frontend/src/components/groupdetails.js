@@ -3,16 +3,18 @@ import { Redirect } from 'react-router';
 // import { Link } from 'react-router-dom';
 import NavBar from './NavBar';
 import SplitwiseImage from '../images/logo.svg'
-
+import GroupTransaction from './grouptransaction';
+import apiHost from '../config.js'
 
 
 import '../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
-import { Row, Col, Navbar, Nav, Table, Image, Container, Form, FormGroup, Button, Card, Jumbotron } from 'react-bootstrap';
+import { Row, Col, Navbar, Nav, ListGroup, Button, Card, Jumbotron } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import splitwiseLogo from "../images/splitwise.svg";
 import userIcon from "../images/sp-ellie.svg";
+import ExpenseButton from "./expenseButton";
 
 import PropTypes from 'prop-types';
 import { userLogin } from '../actions/loginUserAction'
@@ -21,7 +23,13 @@ import { userLogin } from '../actions/loginUserAction'
 class groupdetails extends Component {
     constructor(props){
         super(props);
-        this.state =  this.props.location.state
+        this.state =  {
+          groupname: this.props.location.state.groupname,
+          user_id: localStorage.getItem('user_id'),
+          transactions:[],
+          showExpense: false
+        }
+        localStorage.setItem('groupname', this.state.groupname)
     }
 
     onChange = (e) => {
@@ -30,6 +38,34 @@ class groupdetails extends Component {
         })
     }
 
+    componentDidMount() {
+      this.getgroupdetails();
+    }
+
+    getgroupdetails = async () =>{ 
+      await axios.get(`${apiHost}/api/groupbalance/${localStorage.getItem('user_id')}/${this.state.groupname}`).then((response) =>{
+          if(response.data[0]){
+            this.setState({
+              transactions: response.data,
+            })
+          }
+      }).catch((err) =>{
+            console.log(err)
+      });
+    }
+
+    showmodal = () =>{
+      this.setState({
+        showExpense: true,
+      })
+    }
+
+    hidemodal = () =>{
+      this.setState({
+        showExpense: false,
+      })
+      this.getgroupdetails();
+    }
     // acceptSubmit = (e)=>{
     //     e.preventDefault();
         
@@ -48,49 +84,46 @@ class groupdetails extends Component {
     // }
     
   render() {
+    console.log(this.state.showExpense)
+    const groupDetails = []
+    if (this.state && this.state.transactions && this.state.transactions.length > 0) {
+      this.state.transactions.map((transaction) => {
+        const groupDetail = (
+          <ListGroup.Item><GroupTransaction transaction={transaction} /></ListGroup.Item>
+        );
+        groupDetails.push(groupDetail);
+      });
+    }
+
+
+
     return (
       <div>
       <NavBar/>
       <div className="mt-5">
         <Row>
-            <Col>
+            <Col xs lg="6">
             {'\u00A0'}
             </Col>
+            <h5>{this.state.groupname}</h5>
         </Row>
-          <Row>
-          <Col xs lg="4">{'\u00A0'}</Col>
-          <h5>{this.state.groupname}</h5>
-          <Table striped bordered hover variant="dark">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Username</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td colSpan="2">Larry the Bird</td>
-                <td>@twitter</td>
-              </tr>
-            </tbody>
-          </Table>
+        <Row>
+          <Col style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <ExpenseButton
+              show={this.state.showExpense}
+              handleClose={this.hidemodal}
+            />
+            <Button variant="success" onClick={this.showmodal}>Add an Expense</Button>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col xs lg="3">{'\u00A0'}</Col>
+            <ListGroup variant="flush" style={{width: '40%'}}> 
+              {groupDetails}
+            </ListGroup>
               
-          </Row> 
+        </Row> 
       </div>
       </div>
     )

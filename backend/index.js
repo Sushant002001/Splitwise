@@ -14,6 +14,8 @@ const recentactivity = require('./routes/recentactivity');
 const upload = require('./routes/imageupload');
 const profile = require('./routes/profile');
 const mygroups = require('./routes/mygroups');
+const groupbalance = require('./routes/groupbalances');
+const rejectinvite = require('./routes/rejectinvite');
 
 app.use('/api/ping', ping);
 app.use('/api/login', login);
@@ -29,6 +31,8 @@ app.use('/api/recent', recentactivity);
 app.use('/api/imageupload', upload);
 app.use('/api/profile', profile);
 app.use('/api/mygroups', mygroups);
+app.use('/api/groupbalance', groupbalance);
+app.use('/api/rejectinvite', rejectinvite);
 
 
 const port = process.env.PORT || 3001;

@@ -49,20 +49,43 @@ class displayinvitegroup extends Component {
                 //     message: response.data.message,
                 //     // acceptedGroupName: this.state.group_ame,
                 // });
-                this.props.onUpdateInvitation(this.props.userinviteGroups);
+                this.props.onUpdateInvitation();
+                // window.location.reload(false);
+                }).catch((err) => {
+                    alert(err.response.data);
+                  });
+    }
+
+    rejectSubmit = (e)=>{
+        e.preventDefault();
+        
+        const data = {
+            groupname: this.state.groupname,
+            user_id: this.state.user_id,
+          };
+
+        axios.post(`${apiHost}/api/rejectinvite`,data)
+            .then((response) => {
+                console.log("Status Code : ",response.status)
+                // alert(response.data)
+                // this.setState({
+                //     message: response.data.message,
+                //     // acceptedGroupName: this.state.group_ame,
+                // });
+                this.props.onUpdateInvitation();
                 // window.location.reload(false);
                 }).catch((err) => {
                     alert(err.response.data);
                   });
     }
   render() {
-      console.log("here")
     return (
       <div className="m-2">
           <Card style={{ width: '18rem' }}>
             <Card.Body>
                 <Card.Title>{this.state.groupname}</Card.Title>
-                <Button onClick={this.acceptSubmit}>Accept</Button>
+                <Button variant="link" onClick={this.acceptSubmit}>Accept</Button>{' '}
+                <Button variant="link" onClick={this.rejectSubmit}>Reject</Button>
             </Card.Body>
         </Card>
     </div>

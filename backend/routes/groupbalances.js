@@ -4,10 +4,11 @@ const pool = require('../pool.js');
 
 
 
-router.get('/:user_id', (req, res) => {
-  console.log('Inside recentactivity Get Request');
+router.get('/:user_id/:groupname', (req, res) => {
+  console.log('Inside groupbalances get Request');
   
-  let sql = `CALL recent_activity('${req.params.user_id}');`;
+  let sql = `CALL get_group_details('${req.params.user_id}', '${req.params.groupname}');`;
+  console.log(sql)
 
   pool.query(sql,(err, result) =>{
     if(err){
@@ -16,17 +17,19 @@ router.get('/:user_id', (req, res) => {
         });
         res.send(err);
     }
-    if(result && result.length > 0 ){
+    console.log(result)
+    if(result && result.length > 0){
       res.writeHead(200, {
         'Content-Type': 'text/plain'
       })
+      console.log(result)
       res.end(JSON.stringify(result[0]));
     }
     else{
       res.writeHead(401, {
         'Content-Type': 'text/plain'
       })
-      res.end("NO RECENT ACTIVITY");
+      res.end("NO NEW INVITE");
     }
 
   })

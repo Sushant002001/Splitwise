@@ -5,10 +5,10 @@ const pool = require('../pool.js');
 
 
 router.post('/', (req, res) => {
-  console.log('Inside addexpense Post Request');
-  console.log(req.body)
+  console.log('Inside rejectInvite Post Request');
+  console.log('Req Body : ', req.body);
   
-  let sql = `CALL add_expense('${req.body.groupname}', '${req.body.bill_name}', '${req.body.user_id}', '${req.body.amount}');`;
+  let sql = `CALL group_invite_reject('${req.body.user_id}', '${req.body.groupname}');`;
 
   pool.query(sql,(err, result) =>{
     if(err){
@@ -16,20 +16,19 @@ router.post('/', (req, res) => {
         'Content-Type': 'text/plain'
         });
         res.send(err);
-      console.log(err)
     }
-    console.log(result)
-    if(result && result.length > 0 && result[0][0].status == "BILL_ADDED"){
+    console.log(result[0][0].status)
+    if(result && result.length > 0 && result[0][0].status=='INVITATION REJECTED'){
       res.writeHead(200, {
         'Content-Type': 'text/plain'
       })
-      res.end(JSON.stringify("BILL ADDED"));
+      res.end(result[0][0].status);
     }
-    else if(result && result.length > 0 && result[0][0].status != "BILL ADDED") {
+    else if(result && result.length > 0 && result[0][0].status!= 'INVITATION REJECTED'){
       res.writeHead(401, {
         'Content-Type': 'text/plain'
       })
-      res.end("ERROR");
+      res.end(result[0][0].status);
     }
 
   })

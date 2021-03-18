@@ -179,13 +179,16 @@ DELIMITER ;
 DROP PROCEDURE IF EXISTS `add_expense`;
 DELIMITER ;;
 CREATE PROCEDURE `add_expense` (
-    _group_id INT,
+    _group_name VARCHAR(255),
     _bill_name VARCHAR(255),
     _user_paid_id INT,
     _bill_amount DOUBLE
 )
 BEGIN
     DECLARE _bill_id INT;
+    DECLARE _group_id INT;
+
+    SELECT group_id INTO _group_id from groups WHERE group_name=_group_name;
 
     INSERT INTO bills (group_id, bill_name, user_paid_id, amount, time_added, settledup) 
     VALUES (_group_id,_bill_name,_user_paid_id,_bill_amount,NOW(),'F');
@@ -290,6 +293,7 @@ BEGIN
         b.amount, 
         g.group_name, 
         b.user_paid_id, 
+        paid_by.user_name as paid_by_name,
         gu.user_id,
         u.user_name,
         CASE 
@@ -313,6 +317,11 @@ BEGIN
         FROM groups_users gu
         GROUP BY group_id
     ) gu_count ON b.group_id = gu_count.group_id
+    LEFT JOIN (
+        SELECT DISTINCT b.user_paid_id, 
+                u.user_name 
+        FROM users u JOIN bills b ON u.user_id = b.user_paid_id
+    ) paid_by ON b.user_paid_id = paid_by.user_paid_id
     WHERE u.user_id = _user_id
     ORDER BY b.time_added DESC ;
 END ;;
@@ -405,3 +414,211 @@ DELIMITER ;
     
 -- END ;;
 -- DELIMITER ;
+
+
+
+
+DROP PROCEDURE IF EXISTS `get_group_details`;
+DELIMITER ;;
+CREATE PROCEDURE `get_group_details` (
+    _user_id INT,
+    _group_name VARCHAR(255)
+)
+BEGIN
+    SELECT b.bill_id, 
+            b.bill_name,
+            b.amount, 
+            g.group_name, 
+            b.user_paid_id, 
+            paid_by.user_name as paid_by_name,
+            gu.user_id,
+            u.user_name,
+            CASE 
+                WHEN gu.user_id = b.user_paid_id 
+                THEN 'GET' 
+                ELSE 'PAY' 
+            END AS pay_get, 
+            CASE 
+                WHEN gu.user_id = b.user_paid_id 
+                THEN (b.amount / gu_count.no_of_users) *  (gu_count.no_of_users - 1)
+                ELSE (b.amount / (gu_count.no_of_users))
+            END AS split_amount,
+            b.time_added
+    FROM bills b
+    LEFT JOIN groups g ON b.group_id = g.group_id
+    LEFT JOIN groups_users gu ON b.group_id = gu.group_id
+    LEFT JOIN users u ON gu.user_id = u.user_id 
+    LEFT JOIN (
+        SELECT count(user_id) AS no_of_users,
+                group_id
+        FROM groups_users gu
+        GROUP BY group_id
+    ) gu_count ON b.group_id = gu_count.group_id
+    LEFT JOIN (
+        SELECT DISTINCT b.user_paid_id, 
+                u.user_name 
+        FROM users u JOIN bills b ON u.user_id = b.user_paid_id
+    ) paid_by ON b.user_paid_id = paid_by.user_paid_id
+    WHERE u.user_id = _user_id
+    AND g.group_name = _group_name
+    ORDER BY b.time_added DESC ;
+END ;;
+DELIMITER ;
+
+
+
+
+
+SELECT b.bill_id, 
+            b.bill_name,
+            b.bill_amount, 
+            g.group_name, 
+            b.bill_paid_by, 
+            paid_by.name as paid_by_name,
+            gu.user_id,
+            u.name,
+            CASE 
+                WHEN gu.user_id = b.bill_paid_by 
+                THEN 'GET' 
+                ELSE 'PAY' 
+            END AS pay_get, 
+            CASE 
+                WHEN gu.user_id = b.bill_paid_by 
+                THEN (b.bill_amount / gu_count.no_of_users) *  (gu_count.no_of_users - 1)
+                ELSE (b.bill_amount / (gu_count.no_of_users))
+            END AS split_amount,
+            b.bill_created_at
+    FROM bills b
+    LEFT JOIN groups g ON b.group_id = g.group_id
+    LEFT JOIN groups_users gu ON b.group_id = gu.group_id
+    LEFT JOIN users u ON gu.user_id = u.user_id 
+    LEFT JOIN (
+        SELECT count(user_id) AS no_of_users,
+                group_id
+        FROM groups_users gu
+        GROUP BY group_id
+    ) gu_count ON b.group_id = gu_count.group_id
+    LEFT JOIN (
+        SELECT DISTINCT b.bill_paid_by, 
+                u.name 
+        FROM users u JOIN bills b ON u.user_id = b.bill_paid_by
+    ) paid_by ON b.bill_paid_by = paid_by.bill_paid_by
+    WHERE u.user_id = _user_id
+    ORDER BY b.bill_created_at DESC ;
+
+
+
+    SELECT b.bill_id, 
+        b.bill_name, 
+        b.amount, 
+        g.group_name, 
+        b.user_paid_id, 
+        paid_by.user_name as paid_by_name,
+        gu.user_id,
+        u.user_name,
+        CASE 
+            WHEN gu.user_id = b.user_paid_id 
+            THEN 'GET' 
+            ELSE 'PAY' 
+        END AS pay_get, 
+        CASE 
+            WHEN gu.user_id = b.user_paid_id 
+            THEN (b.amount / gu_count.no_of_users) *  (gu_count.no_of_users - 1)
+            ELSE (b.amount / (gu_count.no_of_users))
+        END AS split_amount,
+        b.time_added
+    FROM bills b
+    LEFT JOIN groups g ON b.group_id = g.group_id
+    LEFT JOIN groups_users gu ON b.group_id = gu.group_id
+    LEFT JOIN users u ON gu.user_id = u.user_id 
+    LEFT JOIN (
+        SELECT count(user_id) AS no_of_users,
+                group_id
+        FROM groups_users gu
+        GROUP BY group_id
+    ) gu_count ON b.group_id = gu_count.group_id
+    LEFT JOIN (
+        SELECT DISTINCT b.user_paid_id, 
+                u.user_name 
+        FROM users u JOIN bills b ON u.user_id = b.user_paid_id
+    ) paid_by ON b.user_paid_id = paid_by.user_paid_id
+    WHERE u.user_id = _user_id
+    ORDER BY b.time_added DESC ;
+
+
+DROP PROCEDURE IF EXISTS `group_invite_reject`;
+DELIMITER ;;
+CREATE PROCEDURE `group_invite_reject` (
+    _user_id INT,
+    _group_name VARCHAR(255)
+)
+BEGIN
+    UPDATE groups_users SET is_member = 'R' WHERE user_id = _user_id AND 
+    group_id = (SELECT group_id from groups WHERE group_name = _group_name);
+    SELECT "INVITATION REJECTED" AS status;
+    
+END ;;
+DELIMITER ;
+
+
+
+DROP PROCEDURE IF EXISTS `get_balances`;
+DELIMITER // 
+CREATE PROCEDURE `get_balances` (
+    _user_id INT,
+    _owed_id INT
+)
+BEGIN
+    SELECT 
+        final2.logged_in_user,
+        MAX(CASE WHEN final2.logged_in_user=u.user_id THEN u.user_name END) AS logged_in_user_name,
+        final2.checking_with_user,
+        MAX(CASE WHEN final2.checking_with_user=u.user_id THEN u.user_name END) AS checking_with_user_name,
+        CASE 
+            WHEN final2.net_amt > 0 THEN 'COLLECT' 
+            WHEN final2.net_amt < 0 THEN 'PAY' 
+            ELSE 'SETTLED'
+            END AS collect_or_pay,
+        final2.net_amt
+    FROM (
+        SELECT 
+            CASE WHEN net_amt > 0 THEN s1_user_id ELSE s2_owed_id END AS logged_in_user,
+            -- u.name AS logged_in_user_name,
+            CASE WHEN net_amt > 0 THEN s1_owed_id ELSE s2_user_id END AS checking_with_user,
+            -- CASE WHEN net_amt > 0 THEN 'COLLECT' ELSE 'PAY' END AS collect_or_pay,
+            net_amt
+        FROM (
+            SELECT 
+                s1.user_id as s1_user_id,
+                s1.owed_user_id as s1_owed_id,
+                s2.user_id as s2_user_id, 
+                s2.owed_user_id as s2_owed_id,
+                s1.collect_amount - s2.owed_amount as net_amt
+            FROM (
+                SELECT 
+                IFNULL(sum(amount),0) AS collect_amount, user_id, owed_user_id
+                FROM bill_transaction
+                WHERE user_id=_user_id AND owed_user_id=_owed_id
+            ) AS s1 
+            JOIN (
+                SELECT IFNULL(sum(amount),0) AS owed_amount, user_id, owed_user_id
+                FROM bill_transaction
+                WHERE user_id=_owed_id AND owed_user_id=_user_id
+            ) AS s2
+        ) AS final
+    ) AS final2
+    JOIN users u 
+    WHERE final2.logged_in_user IS NOT NULL
+    GROUP BY
+    final2.logged_in_user,
+    final2.checking_with_user,
+    CASE 
+        WHEN final2.net_amt > 0 THEN 'COLLECT' 
+        WHEN final2.net_amt < 0 THEN 'PAY' 
+        ELSE 'SETTLED'
+        END,
+    final2.net_amt;
+END //
+DELIMITER ;
+
+
