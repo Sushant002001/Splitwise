@@ -22,7 +22,7 @@ class allUserModal extends Component{
         super(props);
         this.state={
             user_id: localStorage.getItem('user_id'),
-            username: this.props.userName,
+            balances: this.props.balances,
         }
     }
 
@@ -32,9 +32,25 @@ class allUserModal extends Component{
         })
     }
 
-    
+    setName = async(e) =>{
+        console.log(e.target.value)
+        await this.props.setName(e.target.value)
+        this.props.handleClose()
+    }    
 
     render() {
+        let allUserName=[]
+
+        // console.log(this.state.balances)
+        if(this.state && this.state.balances && this.state.balances.length>0){
+            this.state.balances.map((balance)=>{
+                const name= (
+                <ListGroup.Item><Button variant="link" onClick={this.setName} value={balance.user_name2}>{balance.user_name2}</Button></ListGroup.Item>
+                )
+                allUserName.push(name)
+            })
+        }
+        // console.log(allUserName)
 
         
         return(
@@ -43,9 +59,8 @@ class allUserModal extends Component{
         <Modal.Header closeButton>
           <Modal.Title>Settle up</Modal.Title>
         </Modal.Header>
-            
         <Modal.Body>
-            <ListGroup.Item>{this.state.username}</ListGroup.Item>
+           {allUserName}
         </Modal.Body>
       </Modal.Dialog>
         </Modal>

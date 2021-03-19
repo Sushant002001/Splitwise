@@ -78,14 +78,13 @@ class Home extends Component {
 
   render() {
     // this.getBalances();
-    console.log(this.state.balances)
     let oweBalance=[]
     let owedBalance=[]
     let usergroups=[]
     var youOwe=0;
     var youareOwed=0;
     let settleup=[];
-
+    console.log(this.state.balances)
     if(this.state && this.state.balances && this.state.balances.length>0){
       const settle=(<SettleUpButton
         show={this.state.showSettle}
@@ -94,6 +93,7 @@ class Home extends Component {
       />);
       settleup.push(settle);
     }
+    console.log(settleup)
     if(this.state && this.state.balances && this.state.balances.length>0){
       this.state.balances.map((balance)=>{
         if(balance.pay_or_collect=="COLLECT"){

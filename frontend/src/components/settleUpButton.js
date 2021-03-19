@@ -25,6 +25,8 @@ class settleUpButton extends Component{
             user_id: localStorage.getItem('user_id'),
             username: localStorage.getItem('username'),
             balances : this.props.balances,
+            displayName : this.props.balances[0].user_name2,
+            showBalance:this.props.balances[0].amount,
             userShow : false,
         }
     }
@@ -35,24 +37,25 @@ class settleUpButton extends Component{
         })
     }
 
-    settleupSubmit= (e)=>{
-        e.preventDefault()
+    // settleupSubmit= (e)=>{
+    //     e.preventDefault()
 
-        const data = {
-            user_id: this.state.user_id,
-            owed_user_id: this.state.owed_user_id,
-            amount:this.state.amount
-          };
 
-        axios.post(`${apiHost}/api/settleup`,data)
-            .then((response) => {
-                console.log("Status Code : ",response.status)
-                alert(response.data)
-                this.props.handleClose();
-                }).catch((err) => {
-                    alert(err.response.data);
-                  });
-    }
+    //     // const data = {
+    //     //     user_id: this.state.user_id,
+    //     //     owed_user_id: this.props.owed_user_id,
+    //     //     amount:this.state.amount
+    //     //   };
+
+    //     axios.post(`${apiHost}/api/settleup`,data)
+    //         .then((response) => {
+    //             console.log("Status Code : ",response.status)
+    //             alert(response.data)
+    //             this.props.handleClose();
+    //             }).catch((err) => {
+    //                 alert(err.response.data);
+    //               });
+    // }
 
     showmodal = () =>{
         this.setState({
@@ -66,18 +69,30 @@ class settleUpButton extends Component{
         })
       }
 
-    render() {
-
-        let allUser = [];
-        if(this.state && this.state.balances && this.state.balances.length>0){
-            this.state.balances.map((balance)=>{
-                const bal=(<AllUserModal
-                    show={this.state.userShow}
-                    handleClose={this.hidemodal}
-                    userName={balance.user_name2}
-                  />);
-                  allUser.push(bal);
+      setName =(target)=>{
+          console.log(target)
+          const bal= this.props.balances.find((balance=> balance.user_name2===target))
+          console.log(bal)
+          if(bal){
+            this.setState({
+                displayName:target,
+                showBalance: bal.amount
             })
+          }
+      }
+    render() {
+        // console.log(this.state.balances)
+        let allUser = [];
+        console.log(this.state.displayName)
+        if(this.state && this.props.balances && this.props.balances.length>0){
+            const bal=(<AllUserModal
+                show={this.state.userShow}
+                handleClose={this.hidemodal}
+                balances={this.props.balances}
+                setName={this.setName}
+                />
+            )
+                  allUser.push(bal);
           }
         return(
         <Modal show={this.props.show} onHide={this.props.handleClose} centered>
@@ -95,14 +110,14 @@ class settleUpButton extends Component{
                     {allUser}
                 </ListGroup>
                 
-                {this.state.balances && this.state.balances.length>0 ? <Button  variant ="link" onClick={this.showmodal}> {this.state.balances[0].user_name2} </Button> : <Form.Control></Form.Control>} 
+                {this.props.balances && this.props.balances.length>0 ? <Button name="user_name2" value={this.state.displayName} variant ="link" onClick={this.showmodal}> {this.state.displayName}</Button> : <Form.Control></Form.Control>} 
                 
 
             </Row>
             <Form>
                 <Form.Row> 
                     <Col>
-                        <Form.Control type="text" placeholder="$" onChange={this.onChange} name="amount" />
+                        <Form.Control type="text" onChange={this.onChange} value={this.state.showBalance} name="amount" />
                     </Col>
                 </Form.Row>
             </Form>

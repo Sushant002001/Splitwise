@@ -24,8 +24,10 @@ class recentactivity extends Component {
         super(props);
         this.state={
             user_id: localStorage.getItem('user_id'),
-            usertransactions:[],
-            order:"DESC"
+            allusertransactions:[],
+            usertransaction:[],
+            order:"DESC",
+            groups:[]
         }
     }
 
@@ -35,14 +37,37 @@ class recentactivity extends Component {
         })
     }
     componentDidMount(){
-      axios.get(`${apiHost}/api/recent/${localStorage.getItem('user_id')}`).then((response) =>{
-          if(response.data[0]){
-            this.setState({
-              usertransactions: response.data,
-            })
+      this.getTransactions()
+      this.getGroups();
+    }
+
+    getTransactions = async()=>{
+      await axios.get(`${apiHost}/api/recent/${localStorage.getItem('user_id')}`).then((response) =>{
+        if(response.data[0]){
+          this.setState({
+            allusertransactions: response.data,
+            usertransactions: response.data,
+          })
+        }
+        }).catch((err) =>{
+              console.log(err)
+        });
+    }
+
+    getGroups = async()=>{
+      await axios.get(`${apiHost}/api/mygroups/${this.state.user_id}`).then((response) => {
+        //update the state with the response data
+      response.data.map((res) => {
+          if( res.is_member=='Y'){
+              const group = {
+                  groupname: res.group_name,
+                  // group_image: res.group_image,
+                  is_member: res.is_member,
+                  }
+              const grplist = [...this.state.groups, group];
+              this.setState({ groups: grplist });
           }
-      }).catch((err) =>{
-            console.log(err)
+        });
       });
     }
    
@@ -63,16 +88,35 @@ class recentactivity extends Component {
       }
 
     }
+    filterSubmit=(e) =>{
+      e.preventDefault();
+      const filtertransactions = this.state.allusertransactions.filter((transaction)=> transaction.group_name===e.target.value)
+      console.log(filtertransactions)
+      this.setState({
+        usertransactions: filtertransactions
+      })
+
+    }
     
   render() {
     
-    const userDetails = []
+    const groupNames= new Set();
+    const userDetails = [];
     if (this.state && this.state.usertransactions && this.state.usertransactions.length > 0) {
       this.state.usertransactions.map((usertransaction) => {
         const userDetail = (
           <ListGroup.Item><UserTransaction usertransaction={usertransaction} /></ListGroup.Item>
         );
         userDetails.push(userDetail);
+      });
+    }
+
+    if(this.state && this.state.groups && this.state.groups.length>0){
+      this.state.groups.map((group) =>{
+        const groupName =(
+          <Dropdown.Item as="button" value={group.groupname} onClick={this.filterSubmit}>{group.groupname}</Dropdown.Item>
+        )
+        groupNames.add(groupName);
       });
     }
 
@@ -92,9 +136,13 @@ class recentactivity extends Component {
           <h5>RECENT ACTIVITY</h5>  
           <Col xs lg="2">{'\u00A0'}</Col>
           <DropdownButton id="dropdown-item-button" title="SORT">
-            <Dropdown.Item as="button" value="ASCE" onClick={this.sortSubmit}>ASEC</Dropdown.Item>
-            <Dropdown.Item as="button" value="DESC" onClick={this.sortSubmit}>DESC </Dropdown.Item>
+            <Dropdown.Item as="button" value="DESC" onClick={this.sortSubmit}>Recent</Dropdown.Item>
+            <Dropdown.Item as="button" value="ASCE" onClick={this.sortSubmit}>Oldest</Dropdown.Item>
   
+          </DropdownButton>
+          &nbsp;
+          <DropdownButton id="dropdown-item-button" title="FILTER">
+            {groupNames}
           </DropdownButton>
           </Row> 
         <Row>
