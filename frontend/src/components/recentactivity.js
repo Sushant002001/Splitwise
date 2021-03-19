@@ -90,16 +90,25 @@ class recentactivity extends Component {
     }
     filterSubmit=(e) =>{
       e.preventDefault();
-      const filtertransactions = this.state.allusertransactions.filter((transaction)=> transaction.group_name===e.target.value)
+      console.log(this.state.allusertransactions)
+      if(e.target.value==="ALL"){
+        this.setState({
+          usertransactions: this.state.allusertransactions,
+        })
+      }else{
+        const filtertransactions = this.state.allusertransactions.filter((transaction)=> transaction.group_name===e.target.value)
       console.log(filtertransactions)
       this.setState({
         usertransactions: filtertransactions
       })
+      }
+      
 
     }
     
   render() {
     
+    console.log(this.state.usertransactions)
     const groupNames= new Set();
     const userDetails = [];
     if (this.state && this.state.usertransactions && this.state.usertransactions.length > 0) {
@@ -135,13 +144,14 @@ class recentactivity extends Component {
           <Col xs lg="3">{'\u00A0'}</Col>
           <h5>RECENT ACTIVITY</h5>  
           <Col xs lg="2">{'\u00A0'}</Col>
-          <DropdownButton id="dropdown-item-button" title="SORT">
+          <DropdownButton size="sm" id="dropdown-item-button" title="SORT">
             <Dropdown.Item as="button" value="DESC" onClick={this.sortSubmit}>Recent</Dropdown.Item>
             <Dropdown.Item as="button" value="ASCE" onClick={this.sortSubmit}>Oldest</Dropdown.Item>
   
           </DropdownButton>
           &nbsp;
-          <DropdownButton id="dropdown-item-button" title="FILTER">
+          <DropdownButton size="sm" id="dropdown-item-button" title="FILTER">
+          <Dropdown.Item as="button" value="ALL" onClick={this.filterSubmit}>ALL</Dropdown.Item>
             {groupNames}
           </DropdownButton>
           </Row> 

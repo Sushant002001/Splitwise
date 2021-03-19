@@ -7,6 +7,8 @@ import InviteUser from './userinvite';
 import Displaygroup from './displaygroup';
 import Displayinvitegroup from './displayinvitegroup';
 import apiHost from '../config.js';
+import GroupSearchBar from './groupsearchbar';
+import { Link } from 'react-router-dom';
 
 
 
@@ -31,6 +33,7 @@ class mygroups extends Component {
             user_id: localStorage.getItem('user_id'),
             Usergroups: [],
             Userinvitegroups:[],
+            searchName:'',
         };
     }
 
@@ -80,52 +83,70 @@ class mygroups extends Component {
         })
         this.getmygroups()
     }
-  render() {
-    //   const userGroups = [];
-    //   for (let i = 1; i <= this.state.Usergroups.length; i += 1) {
-    //     userGroups.push(<Displaygroup groupname={this.state.Usergroups[i-1].groupname} />);
-    //   }
-    //   const userinviteGroups = [];
-    //   for (let i = 1; i <= this.state.Userinvitegroups.length; i += 1) {
-    //     userinviteGroups.push(<Displayinvitegroup groupname={this.state.Userinvitegroups[i-1].groupname} onUpdateInvitation={this.onUpdateInvitation}/>);
-    //   }
 
+    onSearch = async (name) => {
+        console.log(typeof(name))
+        await this.setState({
+            searchName: name
+        });
+        console.log(this.state.searchName)
+    }
+  render() {
+    console.log(this.state.searchName)
     return (
-      <div>
-      <NavBar/>
-        <Row>
-            <Col xs lg="3">{'\u00A0'}</Col>
-            <Col sm={3} className ="mt-5">
-                <h4>
-                    My Groups
-                </h4>
-                <div className=" d-flex flex-column">
-                    {this.state.Usergroups.map((userGroups) => (
-                    <Displaygroup
-                      key={userGroups}
-                      userGroups={userGroups}
-                      onLeaveGroup={this.onLeaveGroup}
-                    />
-                  ))}
-                </div>
-            </Col>
-            <Col sm={1}></Col>
-            <Col sm={3} className ="mt-5">
-                <h4>
-                    Pending Invites
-                </h4>
-                <div className=" d-flex flex-column">
-                    {this.state.Userinvitegroups.map((userinviteGroups) => (
-                        <Displayinvitegroup
-                        
-                        userinviteGroups={userinviteGroups}
-                        onUpdateInvitation={this.onUpdateInvitation}
+        <div>
+        <NavBar/>
+            <Row>
+                <Col xs md={2}>{'\u00A0'}</Col>
+                <div >
+                <Col>
+                    <Row>
+                        <Col md={6}>
+                        <GroupSearchBar 
+                            onSearch={this.onSearch} 
+                            displayGroupsnames={this.state.Usergroups.map((userGroups) => userGroups.groupname)}
                         />
-                    ))}
+                        <Link to={{ pathname: '/groupdetails', state: { groupname: this.state.searchName } }}>
+                        <Button variant="link">view details</Button>
+                        </Link>
+                        
+                        </Col>
+                    </Row>
+                
+            
+                    <Col sm={3} className ="mt-5">
+                        <h4>
+                            My Groups
+                        </h4>
+                        <div className=" d-flex flex-column">
+                            {this.state.Usergroups.map((userGroups) => (
+                            <Displaygroup
+                            key={userGroups}
+                            userGroups={userGroups}
+                            onLeaveGroup={this.onLeaveGroup}
+                            />
+                        ))}
+                        </div>
+                    </Col>
+                    <Col sm={1}></Col>
+                    <Col sm={3} className ="mt-5">
+                        <h4>
+                            Pending Invites
+                        </h4>
+                        <div className=" d-flex flex-column">
+                            {this.state.Userinvitegroups.map((userinviteGroups) => (
+                                <Displayinvitegroup
+                                
+                                userinviteGroups={userinviteGroups}
+                                onUpdateInvitation={this.onUpdateInvitation}
+                                />
+                            ))}
+                        </div>
+                    </Col>
+                </Col>
                 </div>
-            </Col>
-        </Row>
-    </div>
+            </Row>
+        </div>
     )
   }
 }

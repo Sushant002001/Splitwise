@@ -11,14 +11,9 @@ import RightBarDetails from './rightBarDetails';
 import '../App.css';
 import axios from 'axios';
 import cookie from 'react-cookies';
-import { Row, Col, Navbar, Nav, ListGroup, Button, Card, Jumbotron } from 'react-bootstrap';
-import { connect } from 'react-redux';
-import splitwiseLogo from "../images/splitwise.svg";
-import userIcon from "../images/sp-ellie.svg";
-import ExpenseButton from "./expenseButton";
+import { Row, Col, ListGroup, Button,  } from 'react-bootstrap';
 
-import PropTypes from 'prop-types';
-import { userLogin } from '../actions/loginUserAction'
+import ExpenseButton from "./expenseButton";
 
 
 class groupdetails extends Component {

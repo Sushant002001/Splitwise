@@ -18,6 +18,7 @@ const groupbalance = require('./routes/groupbalances');
 const rejectinvite = require('./routes/rejectinvite');
 const leavegroup = require('./routes/leavegroup');
 const grouptransactions = require('./routes/grouptransactions');
+const nameandemails = require('./routes/nameandemails');
 
 app.use('/api/ping', ping);
 app.use('/api/login', login);
@@ -37,6 +38,7 @@ app.use('/api/groupbalance', groupbalance);
 app.use('/api/rejectinvite', rejectinvite);
 app.use('/api/leavegroup', leavegroup);
 app.use('/api/grouptransactions', grouptransactions);
+app.use('/api/nameandemails', nameandemails);
 
 
 const port = process.env.PORT || 3001;

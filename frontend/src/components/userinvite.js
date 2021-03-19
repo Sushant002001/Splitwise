@@ -4,6 +4,7 @@ import { Redirect } from 'react-router';
 import NavBar from './NavBar';
 import SplitwiseImage from '../images/logo.svg'
 import apiHost from '../config.js';
+import GroupSearchBar from './groupsearchbar';
 
 
 import '../App.css';
@@ -23,6 +24,9 @@ class userinvite extends Component {
         super(props);
         this.state = {  
             user_id: localStorage.getItem('user_id'),
+            displayName:'',
+            displayEmail:'',
+            allUsers:[]
         }
     }
 
@@ -30,6 +34,21 @@ class userinvite extends Component {
         this.setState({
             [e.target.name] : e.target.value
         })
+    }
+
+    componentDidMount(){
+      this.getNameandEmail();
+    }
+
+    getNameandEmail=()=>{
+      axios.get(`${apiHost}/api/nameandemails`).then((response)=>{
+        if(response.data){
+          console.log(response.data)
+          this.setState({
+            allUsers: response.data,
+          })
+        }
+      })
     }
 
     inviteSubmit = (e)=>{
@@ -49,17 +68,37 @@ class userinvite extends Component {
                     alert(err.response.data);
                   });
     }
+    onNameSearch = async (name) => {
+      console.log(typeof(name))
+      await this.setState({
+          username: name
+      });
+      //console.log(this.state.displayName)
+    }
+    onEmailSearch = async (email_id) => {
+      await this.setState({
+          email_id: email_id
+      });
+      //console.log(this.state.displayName)
+    }
 
   render() {
     return (
       <div>
             <Form.Row>
             <Form.Group as={Col} xs={5}>
-            <Form.Control size="sm" type="email" placeholder="Email Address" onChange={this.onChange} name="email_id"/>
+            <GroupSearchBar
+              onSearch={this.onEmailSearch}
+              displayGroupsnames={this.state.allUsers.map((alluser) => alluser.email_id)}
+              />
             </Form.Group>
 
             <Form.Group as={Col} xs={3}>
-            <Form.Control size="sm" type="text" placeholder="Name" onChange={this.onChange} name="username" />
+            {/* <Form.Control size="sm" type="text" placeholder="Name" onChange={this.onChange} name="username" /> */}
+            <GroupSearchBar
+              onSearch={this.onNameSearch}
+              displayGroupsnames={this.state.allUsers.map((alluser) => alluser.user_name)}
+              />
             </Form.Group>
             <Form.Group as={Col} xs={2}>
             <Button size="sm" variant="primary" type="submit" onClick={this.inviteSubmit}>

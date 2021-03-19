@@ -141,6 +141,9 @@ class Home extends Component {
                   <Nav.Link href="/recentactivity"> 
                     <text>Recent Activity</text>  
                   </Nav.Link>
+                  <Nav.Link href="/mygroups"> 
+                    <text>My Groups</text>  
+                  </Nav.Link>
                   <div className=" px-3 pt-3 text-muted">Groups </div>
                   {usergroups}
               </Nav>

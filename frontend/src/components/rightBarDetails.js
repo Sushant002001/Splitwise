@@ -18,9 +18,9 @@ class rightBarDetails extends Component {
     // }
   }
 
-  componentDidUpdate(){
-      this.getUserGroupBalances();
-  }
+//   componentDidUpdate(){
+//       this.getUserGroupBalances();
+//   }
 
   getUserGroupBalances = async () => {
     await axios.get(`${apiHost}/api/grouptransactions/${this.props.groupname}`)
