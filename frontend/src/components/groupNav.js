@@ -9,13 +9,9 @@ class groupNav extends Component {
     render() {
         const { group } = this.props;
         return (
-            <div>
-            <Row>
-                <Link to={{ pathname: '/groupdetails', state: { groupname: this.props.group.groupname } }}>
-                <Button variant="link">{this.props.group.groupname}</Button>
+                <Link className="nav-link" to={{ pathname: '/groupdetails', state: { groupname: this.props.group.groupname } }}>
+                {this.props.group.groupname}
                 </Link>
-            </Row>
-            </div>
             
         );
       }

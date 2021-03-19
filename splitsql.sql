@@ -13,7 +13,7 @@ CREATE TABLE `users`(
     `language` VARCHAR(10) DEFAULT 'ENG',
     `currency` VARCHAR(3) DEFAULT NULL,
     `timezone` VARCHAR(255) DEFAULT NULL,
-    `profile_image` VARCHAR(255),
+    `profile_image` VARCHAR(255)get,
     PRIMARY KEY (`user_id`),
     UNIQUE KEY `email_id_UNIQUE` (`email_id`)
 );
@@ -80,12 +80,37 @@ CREATE PROCEDURE `get_login` (
 )
 BEGIN 
     IF EXISTS(SELECT user_id FROM users WHERE email_id = _email) THEN
-		SELECT user_id, email_id, password, user_name, phone,language, currency,timezone, 1 AS status FROM users WHERE email_id = _email;
+        SELECT user_id, email_id, password, user_name, phone, language, currency,timezone, 1 AS status FROM users WHERE email_id = _email;
 	ELSE
 		SELECT 0 AS status;
 	END IF;
 END ;;
 DELIMITER ;
+
+
+----------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS `get_login`;
+DELIMITER ;;
+CREATE PROCEDURE `get_login` (
+    _email  VARCHAR(255)
+)
+BEGIN
+    IF EXISTS(SELECT user_id FROM users WHERE email_id = _email_id) THEN
+        SELECT user_id, email_id, password, user_name, phone, currency, language, timezone, 1 AS flag FROM users WHERE email = in_email;
+    ELSE
+        SELECT 0 AS flag;
+    END IF;
+END //
+DELIMITER ;
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
 
 DROP PROCEDURE IF EXISTS `post_signup`;
 DELIMITER ;;
@@ -176,6 +201,8 @@ END ;;
 DELIMITER ;
 
 
+--------------------------------------------
+
 DROP PROCEDURE IF EXISTS `add_expense`;
 DELIMITER ;;
 CREATE PROCEDURE `add_expense` (
@@ -188,62 +215,41 @@ BEGIN
     DECLARE _bill_id INT;
     DECLARE _group_id INT;
 
-    SELECT group_id INTO _group_id from groups WHERE group_name=_group_name;
+    IF EXISTS(SELECT group_id FROM groups WHERE group_name=_group_name) THEN
+        SELECT group_id INTO _group_id FROM groups WHERE group_name=_group_name;
 
-    INSERT INTO bills (group_id, bill_name, user_paid_id, amount, time_added, settledup) 
-    VALUES (_group_id,_bill_name,_user_paid_id,_bill_amount,NOW(),'F');
+       INSERT INTO bills (group_id, bill_name, user_paid_id, amount, time_added, settledup) 
+            VALUES (_group_id,_bill_name,_user_paid_id,_bill_amount,NOW(),'F');
 
-    SELECT max(bill_id) INTO _bill_id FROM bills WHERE bill_name = _bill_name AND group_id = _group_id;
+        SELECT max(bill_id) INTO _bill_id FROM bills WHERE bill_name = _bill_name;
+        INSERT INTO bill_transaction ( bill_id, user_id, owed_user_id, amount, settled)
 
-    INSERT INTO bill_transaction ( bill_id, user_id, owed_user_id, amount)
-    SELECT b.bill_id,
+        SELECT b.bill_id,
             b.user_paid_id AS user_id,
             b1.owed_user_id AS owed_user_id,
-            (b.amount / b2.group_members) AS amount
-    FROM bills b 
-    JOIN (
-        SELECT count(groups_users.user_id) AS group_members, 
+            (b.amount / b2.group_members) AS amount,
+            'N' AS settled
+        FROM bills b 
+        JOIN (
+        SELECT count(gu.user_id) AS group_members, 
                 b.group_id, 
                 b.bill_id
         FROM bills b 
-        JOIN groups_users 
-        ON b.group_id = groups_users.group_id 
-        AND groups_users.is_member = 'Y'
+        JOIN groups_users gu 
+        ON b.group_id = gu.group_id 
+        AND gu.is_member = 'Y'
         GROUP BY b.group_id, b.bill_id
-    ) b2 
-    ON b.group_id = b2.group_id 
-    AND b.bill_id = b2.bill_id
-    JOIN
-    (
-        SELECT user_id AS owed_user_id, 
-                bills.bill_id
-        FROM bills 
-        JOIN groups_users 
-        ON bills.group_id = groups_users.group_id 
-        AND bills.user_paid_id <> groups_users.user_id
-        AND groups_users.is_member = 'Y'
-    ) b1 
-    ON b.bill_id = b1.bill_id
-    WHERE b.bill_id = _bill_id;
+        )b1 
+        ON b.bill_id = b1.bill_id
+        WHERE b.bill_id = _bill_id;
 
-    SELECT "BILL_ADDED" AS status;
-
+        SELECT "BILL_ADDED" AS status;
+    
+    ELSE
+        SELECT 'GROUP_DOES_NOT_EXISTS' AS status;
+    END IF;
 END ;;
 DELIMITER ;
-
-
---------------------------------------------
-
-to get balances
-select collect_amount-owed_amount 
-from (select ifnull(sum(amount),0) as collect_amount
-from bill_transaction
-where user_id=1 and owed_user_id=4) as s1 join
-(select ifnull(sum(amount),0) as owed_amount
-from bill_transaction
-where user_id=4 and owed_user_id=1) as s2;
-
-select distinct gu2.user_id as owed_user_id from groups_users gu1 join groups_users gu2 on gu1.user_id <> gu2.user_id;
 
 
 --------------------------------------------------------------------
@@ -333,7 +339,7 @@ CREATE PROCEDURE `get_profile` (
     _user_id  INT
 )
 BEGIN
-    SELECT user_id, email_id, password, user_name, phone, currency, language, timezone FROM users WHERE user_id = _user_id;
+    SELECT user_id, email_id, password, user_name, phone, currency, language, timezone, profile_image FROM users WHERE user_id = _user_id;
     SELECT 1 as status;
 END ;;
 DELIMITER ;
@@ -348,13 +354,15 @@ CREATE PROCEDURE `update_profile` (
     _phone VARCHAR(15),
     _currency VARCHAR(3),
     _language VARCHAR(255),
-    _timezone VARCHAR(255)
+    _timezone VARCHAR(255),
+    _profile_image VARCHAR(255)
 )
 BEGIN
     DECLARE num_users INT;
+
     SELECT COUNT(1) INTO num_users FROM users WHERE user_id = _user_id;
     IF num_users > 0 THEN
-        UPDATE users SET email_id = _email_id, user_name = _user_name, phone = _phone, currency = _currency, language = _language, timezone = _timezone WHERE user_id = _user_id;
+        UPDATE users SET email_id = _email_id, user_name = _user_name, phone = _phone, currency = _currency, language = _language, timezone = _timezone, profile_image= _profile_image WHERE user_id = _user_id;
         SELECT 1 AS status FROM users;
     ELSE
         SELECT 0 AS status;
@@ -380,40 +388,7 @@ END ;;
 DELIMITER ;
 
 
--- DROP PROCEDURE IF EXISTS `get_groups`;
--- DELIMITER ;;
--- CREATE PROCEDURE `get_groups` (
---     _user_id INT
--- )
--- BEGIN
---     SELECT group_name, is_member
---         FROM groups 
---         WHERE group_id IN (
---             SELECT group_id 
---             FROM groups_users 
---             WHERE user_id = _user_id 
---         );
---     SELECT 1 AS status;
--- END ;;
--- DELIMITER ;
 
--- DROP PROCEDURE IF EXISTS `display_group_invite`;
--- DELIMITER ;;
--- CREATE PROCEDURE `display_group_invite` (
---     _user_id INT,
--- )
--- BEGIN
---     SELECT group_name 
---     FROM groups 
---     WHERE group_id IN (
---         SELECT group_id 
---         FROM groups_users 
---         WHERE user_id = _user_id 
---         AND is_member = 'N'
---     );
-    
--- END ;;
--- DELIMITER ;
 
 
 
@@ -619,4 +594,135 @@ BEGIN
         END,
     final2.net_amt;
 END //
+DELIMITER ;
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS `settle_up`;
+DELIMITER ;;
+CREATE PROCEDURE `settle_up` (
+    in_user_id INT,
+    _owed_name VARCHAR(255),
+    _settle_amount DOUBLE
+)
+BEGIN
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE _bill_id, _user_id, in_owed_id, _owed_id INT;
+
+    DECLARE c1 CURSOR FOR (
+        SELECT final.bill_id, final.user_id, final.owed_user_id FROM (
+            (SELECT
+                bt.bill_id,
+                bt.user_id,
+                bt.owed_user_id
+                FROM bill_transaction bt
+                WHERE bt.user_id=in_user_id AND bt.owed_user_id=in_owed_id)
+            UNION ALL
+            (SELECT
+                bt.bill_id,
+                bt.user_id,
+                bt.owed_user_id
+            FROM bill_transaction bt
+            WHERE bt.user_id=in_owed_id AND bt.owed_user_id=in_user_id) 
+        ) AS final
+    );
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    SELECT u.user_id INTO in_owed_id FROM users u WHERE u.user_name = _owed_name; 
+    
+    INSERT INTO bill_transaction (bill_id, user_id, owed_user_id, amount) VALUES (-1, in_user_id, in_owed_id, _settle_amount);
+
+    OPEN c1;
+
+    read_loop: LOOP
+        FETCH c1 INTO _bill_id, _user_id, _owed_id;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+        UPDATE bill_transaction
+        SET settled='Y'
+        WHERE user_id=_user_id AND owed_user_id=_owed_id AND bill_id=_bill_id;
+    END LOOP;
+    
+    CLOSE c1;
+
+END ;;
+DELIMITER ;
+
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS `group_member_leave`;
+DELIMITER ;;
+CREATE PROCEDURE `group_member_leave` (
+    in_user_id INT,
+    in_group_name VARCHAR(255)
+)
+sp: BEGIN
+    
+    DECLARE count_records INT;
+    DECLARE _settled VARCHAR(3);
+
+    SELECT COUNT(final2.settled) INTO count_records
+    FROM (
+        SELECT DISTINCT final.settled 
+        FROM (
+            SELECT 
+                bt.settled 
+            FROM bill_transaction bt
+            JOIN bills b ON bt.bill_id=b.bill_id
+            JOIN groups g ON b.group_id = g.group_id
+            WHERE g.group_name = in_group_name AND bt.user_id=in_user_id
+            UNION ALL 
+            SELECT 
+                bt.settled 
+            FROM bill_transaction bt
+            JOIN bills b ON bt.bill_id=b.bill_id
+            JOIN groups g ON b.group_id = g.group_id
+            WHERE g.group_name = in_group_name AND bt.owed_user_id=in_user_id
+        ) AS final
+    ) AS final2;
+
+
+    IF count_records > 1 THEN
+        SELECT 'NOT_SETTLED' AS flag;
+        LEAVE sp;
+    ELSE
+        SELECT final2.settled INTO _settled 
+        FROM (
+            SELECT DISTINCT final.settled 
+            FROM (
+                SELECT 
+                    bt.settled 
+                FROM bill_transaction bt
+                JOIN bills b ON bt.bill_id=b.bill_id
+                JOIN groups g ON b.group_id = g.group_id
+                WHERE g.group_name = in_group_name AND bt.user_id=in_user_id
+                UNION ALL 
+                SELECT 
+                    bt.settled 
+                FROM bill_transaction bt
+                JOIN bills b ON bt.bill_id=b.bill_id
+                JOIN groups g ON b.group_id = g.group_id
+                WHERE g.group_name = in_group_name AND bt.owed_user_id=in_user_id
+            ) AS final
+        ) AS final2;
+
+        IF _settled <> 'Y' THEN
+            SELECT 'NOT_SETTLED' AS flag;
+            LEAVE sp;
+        ELSE
+            UPDATE groups_users SET is_member = 'L' 
+            WHERE user_id = in_user_id 
+            AND group_id = (SELECT group_id 
+                            FROM groups 
+                            WHERE group_name = in_group_name);
+
+            SELECT 'ALL_BALANCE_SETTLED' AS flag;
+        END IF;
+    END IF;
+END ;;
 DELIMITER ;

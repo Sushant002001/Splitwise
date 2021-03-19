@@ -116,7 +116,7 @@ class Home extends Component {
     if(this.state && this.state.groups && this.state.groups.length > 0){
       this.state.groups.map((group)=>{
         const grp = (
-          <Nav.Item > <GroupNav group={group}/></Nav.Item>
+          <GroupNav group={group}/>
         );
         usergroups.push(grp)
       })
@@ -141,20 +141,12 @@ class Home extends Component {
                   <Nav.Link href="/recentactivity"> 
                     <text>Recent Activity</text>  
                   </Nav.Link>
-              </Nav>
-            </div>
-            </Row>
-            
-            <Row style={{ marginTop:'10%' }}>
-              <h6>Groups</h6>
-            </Row>
-            <Row>
-            <div>
-              <Nav defaultActiveKey="/home" className="flex-column">
+                  <div className=" px-3 pt-3 text-muted">Groups </div>
                   {usergroups}
               </Nav>
             </div>
             </Row>
+          
             </Col>
             
            

@@ -8,14 +8,15 @@ router.post('/', (req, res) => {
   console.log('Inside settleup Post Request');
   console.log('Req Body : ', req.body);
   
-  let sql = `INSERT INTO bill_transaction(bill_id, user_id, owed_user_id, amount) VALUES (-1, ${req.body.user_id}, ${req.body.owed_user_id}, ${req.body.amount} );`;
+  let sql = `CALL settle_up('${req.body.user_id}','${req.body.user_name2}', '${req.body.amount}');`
 
   pool.query(sql,(err, result) =>{
     if(err){
-      res.writeHead(500, {
-        'Content-Type': 'text/plain'
-        });
-        res.send(err);
+      // res.writeHead(500, {
+      //   'Content-Type': 'text/plain'
+      //   });
+      //   res.send(err);
+      console.log(err)
     }
     else{
       res.writeHead(200, {

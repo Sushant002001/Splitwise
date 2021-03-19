@@ -26,7 +26,7 @@ class settleUpButton extends Component{
             username: localStorage.getItem('username'),
             balances : this.props.balances,
             displayName : this.props.balances[0].user_name2,
-            showBalance:this.props.balances[0].amount,
+            showBalance: Math.abs(this.props.balances[0].amount),
             userShow : false,
         }
     }
@@ -37,25 +37,25 @@ class settleUpButton extends Component{
         })
     }
 
-    // settleupSubmit= (e)=>{
-    //     e.preventDefault()
+    settleupSubmit= (e)=>{
+        e.preventDefault()
 
 
-    //     // const data = {
-    //     //     user_id: this.state.user_id,
-    //     //     owed_user_id: this.props.owed_user_id,
-    //     //     amount:this.state.amount
-    //     //   };
+        const data = {
+            user_id: this.state.user_id,
+            user_name2: this.state.displayName,
+            amount:Math.abs(this.state.showBalance),
+          };
 
-    //     axios.post(`${apiHost}/api/settleup`,data)
-    //         .then((response) => {
-    //             console.log("Status Code : ",response.status)
-    //             alert(response.data)
-    //             this.props.handleClose();
-    //             }).catch((err) => {
-    //                 alert(err.response.data);
-    //               });
-    // }
+        axios.post(`${apiHost}/api/settleup`,data)
+            .then((response) => {
+                console.log("Status Code : ",response.status)
+                alert(response.data)
+                this.props.handleClose();
+                }).catch((err) => {
+                    alert(err.response.data);
+                  });
+    }
 
     showmodal = () =>{
         this.setState({
