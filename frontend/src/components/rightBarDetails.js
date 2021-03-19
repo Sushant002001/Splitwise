@@ -26,8 +26,11 @@ class rightBarDetails extends Component {
   getUserGroupBalances = async () => {
     await axios.get(`${apiHost}/api/grouptransactions/${this.props.groupname}`)
       .then((response) => {
+          
+        if(!response.data[0]){
           console.log(response.data[0])
-        if (response.data[0]) {
+        }
+        else if (response.data[0]) {
           const list = response.data.filter((res) => {
             if (res.settled === 'N') {
               return res;

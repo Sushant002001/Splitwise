@@ -123,57 +123,53 @@ class creategroup extends Component {
             </Col>
         </Row>
         <Row>
-            <Col xs lg="2">{'\u00A0'}</Col>
-            <Image style={{ width: '17rem' }} src={group_image} />
-                <Form onSubmit={this.onUpload}>
-                <Form.Group as={Col} className="lg-3">
-                  <Form.File
-                    className="mt-3"
-                    name="group_image"
-                    id="group_image"
-                    style={{ width: '17rem' }}
-                    accept="image/*"
-                    label={filename}
-                    onChange={this.onAvatarChange}
-                    custom
-                  />
-                  <br />
-                  <Button type="submit">Upload</Button>
-                </Form.Group>
+          <Col md={{ offset: 1, span: 3}}>
+            <Form onSubmit={this.onUpload}>
+              <Form.Group as={Col} className="lg-3">
+                <Image style={{ width: '17rem' }} src={group_image} />
+              </Form.Group>
+              <Form.Group as={Col} className="lg-3">
+                <Form.File
+                  className="mt-3"
+                  name="group_image"
+                  id="group_image"
+                  style={{ width: '17rem' }}
+                  accept="image/*"
+                  label={filename}
+                  onChange={this.onAvatarChange}
+                  custom
+                />
+              </Form.Group>
+              <FormGroup as={Col} className="lg-3"><Button type="submit">Upload</Button></FormGroup>
+            </Form>
+          </Col>
+          <Col md={{ span: 8}}>
+            <Row>
+              <Form>
+                <Form.Row>
+                  <Form.Group as={Col}>
+                    <Form.Label>Start A New Group </Form.Label>
+                      <h3>My group shall be called…</h3>
+                    <Form.Control size="lg" type="text" placeholder="Groceries" onChange={this.onChange} name="groupname"/>
+                  </Form.Group>
+                </Form.Row>
+                <Form.Row>
+                  <Form.Group as={Col}>
+                    <Button variant="primary" type="submit" style={{float: 'right'}} onClick={this.submitGroup}>
+                        Save
+                    </Button>
+                  </Form.Group>
+                </Form.Row>
               </Form>
-            <Col sm={4}>
-                <Row>
-                    <Form>
-                        <Form.Group>
-                        <Form.Label>Start A New Group </Form.Label>
-                        <br />
-                        <div>
-                            <h3>My group shall be called…</h3>
-                        </div>
-                        <Form.Control size="lg" type="text" placeholder="Groceries" onChange={this.onChange} name="groupname"/>
-                        </Form.Group>
-                        <Button variant="primary" type="submit" style={{float: 'right'}} onClick={this.submitGroup}>
-                            Save
-                        </Button>
-                    </Form>
-                </Row>
-                <Row>
-                    <Col>
-                        {'\u00A0'}
-                    </Col>
-                </Row>
-                <Row>
-                    <div>
-                        <h5>
-                            GROUP MEMBERS
-                        </h5>
-                        <p>
-                            {this.state.current_username}({this.state.current_email_id})
-                        </p>
-                    </div>
-                </Row>
+            </Row>
+            <Row>
+              <Col md={{ span:6}}>
+                <h5>
+                  GROUP MEMBERS
+                </h5>
+                {this.state.current_username}({this.state.current_email_id})
                 <div>
-                    {Userinvites}
+                      {Userinvites}
                 </div>
                 <Form.Row>
                   <Form.Group>
@@ -182,9 +178,11 @@ class creategroup extends Component {
                   </Form.Group>
                 </Form.Row>
                 <Form.Row>
-                <Button href = '/home' variant="success" >Success</Button>
+                  <Button href = '/home' variant="success" >Success</Button>
                 </Form.Row>
-            </Col>
+              </Col>
+            </Row>
+          </Col>
         </Row>
       </div>
     </div>

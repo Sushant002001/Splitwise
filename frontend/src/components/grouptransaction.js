@@ -39,7 +39,7 @@ class grouptransaction extends Component {
                   </p>
                 ) }
               </Row>
-              <Row>{numeral(transaction.amount).format('$0.00')}</Row>
+              <Row>{numeral(transaction.split_amount).format('$0.00')}</Row>
             </Col>
           </Row>
         </Col>
