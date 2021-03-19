@@ -239,7 +239,20 @@ BEGIN
         ON b.group_id = gu.group_id 
         AND gu.is_member = 'Y'
         GROUP BY b.group_id, b.bill_id
-        )b1 
+        )b2 
+        ON b.group_id = b2.group_id 
+        AND b.bill_id = b2.bill_id
+        JOIN
+        (
+            SELECT user_id AS owed_user_id, 
+                    bills.bill_id
+            FROM bills 
+            JOIN groups_users 
+            ON bills.group_id = groups_users.group_id 
+            AND bills.user_paid_id <> groups_users.user_id
+            AND groups_users.is_member = 'Y'
+        )
+        b1 
         ON b.bill_id = b1.bill_id
         WHERE b.bill_id = _bill_id;
 
@@ -426,7 +439,7 @@ BEGIN
     LEFT JOIN (
         SELECT count(user_id) AS no_of_users,
                 group_id
-        FROM groups_users gu
+        FROM groups_users gu WHERE gu.is_member='Y'
         GROUP BY group_id
     ) gu_count ON b.group_id = gu_count.group_id
     LEFT JOIN (
@@ -724,5 +737,34 @@ sp: BEGIN
             SELECT 'ALL_BALANCE_SETTLED' AS flag;
         END IF;
     END IF;
+END ;;
+DELIMITER ;
+
+--------------------------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `get_group_balance`;
+DELIMITER ;;
+CREATE PROCEDURE `get_group_balance` (
+    _group_name VARCHAR(255)
+)
+BEGIN
+    SELECT bt.user_id, 
+    MAX(CASE WHEN bt.user_id=u.user_id THEN u.user_name END) AS user1,
+    bt.owed_user_id, 
+    MAX(CASE WHEN bt.owed_user_id=u.user_id THEN u.user_name END) AS user2,
+        g.group_id, 
+        bt.amount, 
+        bt.settled,
+        bt.bill_id
+    FROM bill_transaction bt
+    JOIN bills b ON bt.bill_id=b.bill_id
+    JOIN groups g ON b.group_id = g.group_id
+    JOIN users u WHERE g.group_name = _group_name
+    GROUP BY
+        bt.user_id, 
+        bt.owed_user_id, 
+        g.group_id, 
+        bt.amount, 
+        bt.settled,
+        bt.bill_id;
 END ;;
 DELIMITER ;

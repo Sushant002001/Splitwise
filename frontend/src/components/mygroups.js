@@ -71,8 +71,15 @@ class mygroups extends Component {
             Userinvitegroups:[],
         })
         this.getmygroups()
-      }
+    }
 
+    onLeaveGroup = () => {
+        this.setState({
+            Usergroups: [],
+            Userinvitegroups:[],
+        })
+        this.getmygroups()
+    }
   render() {
     //   const userGroups = [];
     //   for (let i = 1; i <= this.state.Usergroups.length; i += 1) {
@@ -97,6 +104,7 @@ class mygroups extends Component {
                     <Displaygroup
                       key={userGroups}
                       userGroups={userGroups}
+                      onLeaveGroup={this.onLeaveGroup}
                     />
                   ))}
                 </div>

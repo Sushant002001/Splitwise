@@ -5,6 +5,7 @@ import NavBar from './NavBar';
 import SplitwiseImage from '../images/logo.svg'
 import GroupTransaction from './grouptransaction';
 import apiHost from '../config.js'
+import RightBarDetails from './rightBarDetails';
 
 
 import '../App.css';
@@ -27,7 +28,9 @@ class groupdetails extends Component {
           groupname: this.props.location.state.groupname,
           user_id: localStorage.getItem('user_id'),
           transactions:[],
+          currentState:true,
           showExpense: false
+
         }
         localStorage.setItem('groupname', this.state.groupname)
     }
@@ -63,6 +66,7 @@ class groupdetails extends Component {
     hidemodal = () =>{
       this.setState({
         showExpense: false,
+        currentState: !this.state.currentState
       })
       this.getgroupdetails();
     }
@@ -102,28 +106,40 @@ class groupdetails extends Component {
       <NavBar/>
       <div className="mt-5">
         <Row>
-            <Col xs lg="6">
-            {'\u00A0'}
-            </Col>
-            <h5>{this.state.groupname}</h5>
-        </Row>
-        <Row>
-          <Col style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <ExpenseButton
-              show={this.state.showExpense}
-              handleClose={this.hidemodal}
-            />
-            <Button variant="success" onClick={this.showmodal}>Add an Expense</Button>
-          </Col>
-        </Row>
+          <Col>
+            <Row>
+              <Col md={{ span: 5 }} className="mx-2">
+              {'\u00A0'}
+              </Col>
+              <h5>{this.state.groupname}</h5>
+            </Row>
+            <Row>
+            <Col md={{ span: 8 }} className="mx-2" style={{ display: 'flex', justifyContent: 'flex-end ' }}>
+              <ExpenseButton
+                show={this.state.showExpense}
+                handleClose={this.hidemodal}
+              />
+              <Button variant="success" onClick={this.showmodal}>Add an Expense</Button>
+              </Col>
+            </Row>
 
-        <Row>
-          <Col xs lg="3">{'\u00A0'}</Col>
-            <ListGroup variant="flush" style={{width: '40%'}}> 
-              {groupDetails}
-            </ListGroup>
-              
-        </Row> 
+            <Row>
+              <Col xs lg="3">{'\u00A0'}</Col>
+                <ListGroup variant="flush" style={{width: '40%'}}> 
+                  {groupDetails}
+                </ListGroup>
+                  
+            </Row> 
+          </Col>
+          <Col md={{ span: 2 }}>
+            <RightBarDetails 
+              key={this.state.groupname}
+              groupname={this.state.groupname}
+              //currentState={this.state.currentState}
+            />
+          </Col>
+
+        </Row>
       </div>
       </div>
     )

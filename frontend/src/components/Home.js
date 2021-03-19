@@ -130,13 +130,13 @@ class Home extends Component {
       <div>
         <Row>
           <Col xs lg="2">{'\u00A0'}</Col>
-            <Col sm={2}> 
+            <Col sm={2} className="mt-3" > 
             <Row>
             <div>
               <Nav defaultActiveKey="/home" className="flex-column">
                   <Nav.Link href="/home"> 
                     {/* <img src={SplitwiseImage} class='img-fluid rounded' style={{ height:20, width:20}} alt='Splitwise' />  */}
-                    <text >Dashboard</text> 
+                    <text>Dashboard</text> 
                   </Nav.Link>
                   <Nav.Link href="/recentactivity"> 
                     <text>Recent Activity</text>  
@@ -153,7 +153,7 @@ class Home extends Component {
             
             
             {/* <Col xs lg="1">{'\u00A0'}</Col> */}
-            <Col md={4}>
+            <Col md={4} className="mt-3">
               <h3>Dashboard</h3>
               {settleup}
             <Button variant="success" onClick={this.showmodal}>Settle Up</Button>
