@@ -11,10 +11,10 @@ router.post('/', (req, res) => {
 
   pool.query(sql,(err, result) =>{
     if(err){
-      res.writeHead(500, {
-        'Content-Type': 'text/plain'
-        });
-        res.send(err);
+      // res.writeHead(500, {
+      //   'Content-Type': 'text/plain'
+      //   });
+        console.log(err);
     }
     if(result && result.length > 0 && result[0][0].status==1){
         res.writeHead(200, {
