@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { Row, Container } from 'react-bootstrap';
 import axios from 'axios';
 import apiHost from '../config';
+var numeral = require('numeral');
 
 class rightBarDetails extends Component {
   constructor(props) {
@@ -70,8 +71,8 @@ class rightBarDetails extends Component {
             {value}
             &nbsp;
             <br />
-            gets back $
-            {key}
+            gets back  <font color="#5bc5a7">{numeral(parseInt(key)).format('$0.00')}</font>
+            
           </Row>,
         );
       });
@@ -81,8 +82,9 @@ class rightBarDetails extends Component {
             {value}
             &nbsp;
             <br />
-            owes $
-            {key}
+            owes 
+            <br/>
+            <font color="#ff652f">{numeral(parseInt(key)).format('$0.00')}</font>
           </Row>,
         );
       });

@@ -13,7 +13,7 @@ class Youareowed extends Component {
             <b>{balance.user_name2}</b>
         </Row>
         <Row>
-            <p>owes you </p> &nbsp; {numeral(balance.amount).format('$0.00')}
+        <p>owes you </p> &nbsp; <font color="#5bc5a7">{numeral(balance.amount).format('$0.00')}</font>
         </Row>
         </div>
         

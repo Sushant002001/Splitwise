@@ -39,7 +39,7 @@ class NavBar extends Component {
       </Dropdown>
     );
 
-    if (localStorage.getItem("user_id")) {
+    if (sessionStorage.getItem("username")) {
       navUser = (
         <div class="collapse navbar-collapse navbar-right" id="navbarNav">
           <Nav className="mr-auto">

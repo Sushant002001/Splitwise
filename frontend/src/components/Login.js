@@ -58,6 +58,7 @@ class login extends Component {
       // }
       // localStorage.setItem('userObj', JSON.stringify(userObject))
       // console.log(localStorage.getItem('userObj').user_id)
+      sessionStorage.setItem('username', this.props.user.username);
       localStorage.setItem('username', this.props.user.username);
       localStorage.setItem('email_id', this.props.user.email_id);
       localStorage.setItem('user_id', this.props.user.user_id);
