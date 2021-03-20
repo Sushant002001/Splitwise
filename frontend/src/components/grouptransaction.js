@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import Moment from 'react-moment';
+var numeral = require('numeral');
 
 
 class grouptransaction extends Component {
@@ -18,7 +19,7 @@ class grouptransaction extends Component {
                 {' '}
                 paid
               </Row>
-              <Row>{transaction.amount}</Row>
+              <Row>{numeral(transaction.amount).format('$0.00')}</Row>
             </Col>
           </Row>
         </Col>
@@ -38,7 +39,7 @@ class grouptransaction extends Component {
                   </p>
                 ) }
               </Row>
-              <Row>{transaction.split_amount}</Row>
+              <Row>{numeral(transaction.amount).format('$0.00')}</Row>
             </Col>
           </Row>
         </Col>

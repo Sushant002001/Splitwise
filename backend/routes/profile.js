@@ -65,7 +65,7 @@ router.put('/', (req, res) => {
       console.log(result)
       if(result && result.length > 0 && result[0][0].status == 1){
         const returnObj={
-          message: "Changes_update",
+          message: "CHANGES UPDATED",
         }
         res.writeHead(200, {
             'Content-Type': 'text/plain'

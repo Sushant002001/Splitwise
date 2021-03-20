@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import Moment from 'react-moment';
 import 'moment-timezone';
+var numeral = require('numeral');
 
 
 class usertransaction extends Component {
@@ -39,11 +40,11 @@ class usertransaction extends Component {
             className={usertransaction.user_paid_id === usertransaction.user_id ? 'paid' : 'owe'}
           >
             {usertransaction.user_paid_id === usertransaction.user_id ? <font color="#5bc5a7">You paid  &nbsp;
-            {usertransaction.split_amount} </font>: <font color="#ff652f">You owe &nbsp;
-            {usertransaction.split_amount} </font> }
+            {numeral(usertransaction.split_amount).format('$0.00')} </font>: <font color="#ff652f">You owe &nbsp;
+            {numeral(usertransaction.split_amount).format('$0.00')} </font> }
           </Row>
           <Row>
-            <Moment tz={localStorage.getItem('timezone')} className="billdate" format="dddd">{usertransaction.time_added}</Moment>
+            <Moment date={Date.UTC(usertransaction.bill_created_at)} tz={localStorage.getItem('timezone')} className="billdate" format="dddd">{usertransaction.time_added}</Moment>
           </Row>
         </Col>
       </Row>

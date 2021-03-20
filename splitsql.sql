@@ -90,26 +90,6 @@ DELIMITER ;
 
 ----------------------------------------------------------------------------------
 
-DROP PROCEDURE IF EXISTS `get_login`;
-DELIMITER ;;
-CREATE PROCEDURE `get_login` (
-    _email  VARCHAR(255)
-)
-BEGIN
-    IF EXISTS(SELECT user_id FROM users WHERE email_id = _email_id) THEN
-        SELECT user_id, email_id, password, user_name, phone, currency, language, timezone, 1 AS flag FROM users WHERE email = in_email;
-    ELSE
-        SELECT 0 AS flag;
-    END IF;
-END //
-DELIMITER ;
-
-
-
-
-
-
-
 ---------------------------------------------------------------------------------
 
 DROP PROCEDURE IF EXISTS `post_signup`;
@@ -121,7 +101,7 @@ CREATE PROCEDURE `post_signup` (
 )
 BEGIN 
     IF NOT EXISTS(SELECT email_id FROM users WHERE email_id = _email) THEN
-        INSERT INTO users(user_name, email_id, password) VALUES (_username, _email, _password);
+        INSERT INTO users(user_name, email_id, password, language, currency, timezone) VALUES (_username, _email, _password, "ENG", "USD", "Pacific Time (US & Canada)");
 		SELECT 1 AS status ;
 	ELSE
 		SELECT 0 AS status;

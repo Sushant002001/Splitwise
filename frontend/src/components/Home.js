@@ -11,6 +11,7 @@ import YouOwe from './Youowe';
 import YouareOwed from './Youareowed';
 import GroupNav from './groupNav';
 import SettleUpButton from './settleUpButton';
+var numeral = require('numeral');
 // import { Text} from 'react-native';
 
 class Home extends Component {
@@ -165,21 +166,21 @@ class Home extends Component {
                 <ListGroup.Item as={Col}>Total Balance
                   <Row>
                     <Col>
-                      {totalBalance}
+                      {numeral(totalBalance).format('$0.00')}
                     </Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item as={Col}>You Owe
                   <Row>
                       <Col>
-                        {youOwe}
+                        {numeral(youOwe).format('$0.00')}
                       </Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item as= {Col}>You are Owed
                   <Row>
                       <Col>
-                        {youareOwed}
+                        {numeral(youareOwed).format('$0,00')}
                       </Col>
                   </Row>
                 </ListGroup.Item>

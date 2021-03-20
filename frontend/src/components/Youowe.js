@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import Moment from 'react-moment';
 import 'moment-timezone';
+var numeral = require('numeral');
 
 
 class Youowe extends Component {
@@ -13,7 +14,7 @@ class Youowe extends Component {
                <b>{balance.user_name2}</b>
             </Row>
             <Row>
-                <p>you owe </p> &nbsp; {Math.abs(balance.amount)}
+                <p>you owe </p> &nbsp; {numeral(Math.abs(balance.amount)).format('$0,00')}
             </Row>
             </div>
             

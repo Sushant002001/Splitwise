@@ -67,7 +67,7 @@ class expenseButton extends Component{
                         <Form.Control type="text" placeholder="Enter Description" onChange={this.onChange} name= "bill_name"/>
                     </Col>
                     <Col>
-                        <Form.Control type="text" placeholder="$" onChange={this.onChange} name="amount" />
+                        <Form.Control type="text" placeholder="Amount" onChange={this.onChange} name="amount" />
                     </Col>
                 </Form.Row>
             </Form>

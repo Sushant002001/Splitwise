@@ -84,12 +84,14 @@ class profile extends Component {
                 console.log("Status Code : ",response.status);
                 if(response.status === 200){
                     this.setState({
-                        message:response.data
+                        message:response.data.message
                     })
+                    alert(this.state.message)
                 }else{
                     this.setState({
-                        message:response.data
+                        message:response.data.message
                     })
+                    alert(this.state.message)
                 }
             });
     }
@@ -107,7 +109,7 @@ class profile extends Component {
             //update the state with the response data
             const profile = response.data
             this.setState(
-                profile );
+                profile );      
         });
     }
 
