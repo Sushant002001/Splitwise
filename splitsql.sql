@@ -109,6 +109,9 @@ BEGIN
 END ;;
 DELIMITER ;
 
+
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `create_group`;
 DELIMITER ;;
 CREATE PROCEDURE `create_group` (
@@ -129,6 +132,9 @@ BEGIN
     END IF;
 END ;;
 DELIMITER ;
+
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 
 DROP PROCEDURE IF EXISTS `invite_to_group`;
 DELIMITER ;;
@@ -163,6 +169,8 @@ sp: BEGIN
 END ;;
 DELIMITER ;
 
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 
 
 DROP PROCEDURE IF EXISTS `group_invite_accept`;
@@ -182,6 +190,7 @@ DELIMITER ;
 
 
 --------------------------------------------
+----------------------------------------------------------------------------------------
 
 DROP PROCEDURE IF EXISTS `add_expense`;
 DELIMITER ;;
@@ -244,42 +253,8 @@ BEGIN
 END ;;
 DELIMITER ;
 
-
+----------------------------------------------------------------------------------------
 --------------------------------------------------------------------
-
--- get recent activity
-SELECT b.bill_id, 
-        b.bill_name, 
-        b.amount, 
-        g.group_name, 
-        -- u.user_id,
-        b.user_paid_id, 
-        gu.user_id,
-        u.user_name,
-        CASE 
-            WHEN gu.user_id = b.user_paid_id 
-            THEN 'GET' 
-            ELSE 'PAY' 
-        END AS pay_get, 
-        CASE 
-            WHEN gu.user_id = b.user_paid_id 
-            THEN (b.amount / gu_count.no_of_users) *  (gu_count.no_of_users - 1)
-            ELSE (b.amount / (gu_count.no_of_users))
-        END AS split_amount,
-        b.time_added
-FROM bills b
-LEFT JOIN groups g ON b.group_id = g.group_id
-LEFT JOIN groups_users gu ON b.group_id = gu.group_id
-LEFT JOIN users u ON gu.user_id = u.user_id 
-LEFT JOIN (
-    SELECT count(user_id) AS no_of_users,
-            group_id
-    FROM groups_users gu
-    GROUP BY group_id
-) gu_count ON b.group_id = gu_count.group_id
-WHERE u.user_id = _user_id
-ORDER BY b.time_added _order ;
-
 
 DROP PROCEDURE IF EXISTS `recent_activity`;
 DELIMITER ;;
@@ -326,6 +301,9 @@ BEGIN
 END ;;
 DELIMITER ;
 
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+
 DROP PROCEDURE IF EXISTS `get_profile`;
 DELIMITER ;;
 CREATE PROCEDURE `get_profile` (
@@ -337,6 +315,8 @@ BEGIN
 END ;;
 DELIMITER ;
 
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 
 DROP PROCEDURE IF EXISTS `update_profile`;
 DELIMITER ;;
@@ -361,7 +341,8 @@ BEGIN
     END IF;
 END ;;
 DELIMITER ;
-
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 
 DROP PROCEDURE IF EXISTS `get_groups`;
 DELIMITER ;;
@@ -381,7 +362,8 @@ DELIMITER ;
 
 
 
-
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 
 
 
@@ -512,7 +494,8 @@ SELECT b.bill_id,
     WHERE u.user_id = _user_id
     ORDER BY b.time_added DESC ;
 
-
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `group_invite_reject`;
 DELIMITER ;;
 CREATE PROCEDURE `group_invite_reject` (
@@ -527,7 +510,8 @@ BEGIN
 END ;;
 DELIMITER ;
 
-
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 
 DROP PROCEDURE IF EXISTS `get_balances`;
 DELIMITER // 
@@ -590,6 +574,7 @@ DELIMITER ;
 
 
 -----------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
 
 DROP PROCEDURE IF EXISTS `settle_up`;
 DELIMITER ;;
@@ -644,7 +629,7 @@ END ;;
 DELIMITER ;
 
 
-
+----------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------
 
 DROP PROCEDURE IF EXISTS `group_member_leave`;
@@ -718,7 +703,7 @@ sp: BEGIN
     END IF;
 END ;;
 DELIMITER ;
-
+----------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `get_group_balance`;
 DELIMITER ;;
@@ -747,7 +732,7 @@ BEGIN
         bt.bill_id;
 END ;;
 DELIMITER ;
-
+----------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------
 DROP PROCEDURE IF EXISTS `get_name_and_email`;
 DELIMITER ;;
@@ -759,3 +744,5 @@ BEGIN
     SELECT email_id, user_name from users WHERE user_id <> _user_id ;
 END ;;
 DELIMITER ;
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

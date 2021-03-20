@@ -2,10 +2,11 @@ const mysql = require('mysql2/promise');
 
 const pool2 = mysql.createPool({
     connectionLimit: 100,
-    host: 'database-1.cfws2wsto5kt.us-west-2.rds.amazonaws.com',
-    user: 'admin',
+    host: 'localhost',
+    user: 'root',
     port: '3306',
     password: 'splitwise',
+    connectionLimit: '100',
     database: 'splitwise'
 });
 

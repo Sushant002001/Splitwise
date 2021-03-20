@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
+import cookie from 'react-cookies';
+
 // import { Link } from 'react-router-dom';
 import NavBar from './NavBar';
 import { Row, Col, Button, Nav, ListGroup } from 'react-bootstrap';
@@ -78,6 +80,9 @@ class Home extends Component {
   }
 
   render() {
+    if(!cookie.load('cookie')){
+      return <Redirect to= "/login"/>
+  }
     // this.getBalances();
     let oweBalance=[]
     let owedBalance=[]

@@ -9,13 +9,14 @@ import { Link } from "react-router-dom";
 
 class LandingPage extends Component {
 	render() {
-		let redirectVar = null;
-		if (localStorage.getItem("user_id")) {
-			redirectVar = <Redirect to="/home" />
-		}
+		// const{user:}
+		// let redirectVar = null;
+		// if (localStorage.getItem("user_id")) {
+		// 	redirectVar = <Redirect to="/home" />
+		// }
 		return (
 			<div>
-				{redirectVar}
+				{/* {redirectVar} */}
 				
 				<NavBar />
 				<div >

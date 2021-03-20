@@ -64,6 +64,7 @@ class groupdetails extends Component {
         currentState: !this.state.currentState
       })
       this.getgroupdetails();
+      window.location.reload();
     }
     // acceptSubmit = (e)=>{
     //     e.preventDefault();
