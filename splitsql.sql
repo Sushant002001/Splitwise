@@ -367,15 +367,14 @@ CREATE PROCEDURE `update_profile` (
     _phone VARCHAR(15),
     _currency VARCHAR(3),
     _language VARCHAR(255),
-    _timezone VARCHAR(255),
-    _profile_image VARCHAR(255)
+    _timezone VARCHAR(255)
 )
 BEGIN
     DECLARE num_users INT;
 
     SELECT COUNT(1) INTO num_users FROM users WHERE user_id = _user_id;
     IF num_users > 0 THEN
-        UPDATE users SET email_id = _email_id, user_name = _user_name, phone = _phone, currency = _currency, language = _language, timezone = _timezone, profile_image= _profile_image WHERE user_id = _user_id;
+        UPDATE users SET email_id = _email_id, user_name = _user_name, phone = _phone, currency = _currency, language = _language, timezone = _timezone WHERE user_id = _user_id;
         SELECT 1 AS status FROM users;
     ELSE
         SELECT 0 AS status;
@@ -766,5 +765,17 @@ BEGIN
         bt.amount, 
         bt.settled,
         bt.bill_id;
+END ;;
+DELIMITER ;
+
+----------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS `get_name_and_email`;
+DELIMITER ;;
+CREATE PROCEDURE `get_name_and_email`(
+    _user_id INT
+)
+
+BEGIN
+    SELECT email_id, user_name from users WHERE user_id <> _user_id ;
 END ;;
 DELIMITER ;

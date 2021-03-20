@@ -4,10 +4,10 @@ const pool = require('../pool.js');
 
 
 
-router.get('/', (req, res) => {
+router.get('/:user_id', (req, res) => {
   console.log('Inside Name and Emails  Get Request');
   
-  let sql = `CALL get_name_and_email();`;
+  let sql = `CALL get_name_and_email(${req.params.user_id});`;
 
   pool.query(sql,(err, result) =>{
     if(err){

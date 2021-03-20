@@ -37,6 +37,39 @@ class creategroup extends Component {
         })
     }
 
+    onAvatarChange = (e) => {
+        this.setState({
+          file: e.target.files[0],
+          filename: e.target.files[0].name,
+        });
+    }
+
+    onUpload = (e) => {
+        e.preventDefault();
+        console.log(this.state.file)
+        const formData = new FormData();
+        formData.append('group_image', this.state.file);
+        const uploadConfig = {
+          headers: {
+            'content-type': 'multipart/form-data',
+          },
+        };
+       axios.post(`${apiHost}/api/imageupload/group/${this.state.groupname}`, formData, uploadConfig)
+      .then((response) => {
+        // alert('Image uploaded successfully!');
+        this.setState({
+          filename: 'Choose your avatar',
+          group_image: response.data.message,
+        });
+        console.log(this.state.group_image);
+        // this.getUser();
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+    }
+
+
     submitGroup = (e)=>{
         var headers = new Headers();
         e.preventDefault();
@@ -67,9 +100,17 @@ class creategroup extends Component {
     }
 
   render() {
+      const filename= this.state.filename || 'Choose you Profile';
       const Userinvites = [];
       for (let i = 1; i <= this.state.memberList; i += 1) {
         Userinvites.push(<InviteUser groupname={this.state.groupname} />);
+      }
+
+      let group_image =null;
+      if (this.state) {
+          console.log(this.state.group_image)
+          group_image = `${apiHost}/api/imageupload/group/${this.state.group_image}`;
+          console.log(group_image);
       }
 
     return (
@@ -83,7 +124,23 @@ class creategroup extends Component {
         </Row>
         <Row>
             <Col xs lg="2">{'\u00A0'}</Col>
-            <Col sm={3}><img src={SplitwiseImage} class='img-fluid rounded float-right' style={{ height:200, width:200}} alt='Splitwise' /></Col>
+            <Image style={{ width: '17rem' }} src={group_image} />
+                <Form onSubmit={this.onUpload}>
+                <Form.Group as={Col} className="lg-3">
+                  <Form.File
+                    className="mt-3"
+                    name="group_image"
+                    id="group_image"
+                    style={{ width: '17rem' }}
+                    accept="image/*"
+                    label={filename}
+                    onChange={this.onAvatarChange}
+                    custom
+                  />
+                  <br />
+                  <Button type="submit">Upload</Button>
+                </Form.Group>
+              </Form>
             <Col sm={4}>
                 <Row>
                     <Form>

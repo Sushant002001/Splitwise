@@ -41,7 +41,7 @@ class userinvite extends Component {
     }
 
     getNameandEmail=()=>{
-      axios.get(`${apiHost}/api/nameandemails`).then((response)=>{
+      axios.get(`${apiHost}/api/nameandemails/${this.state.user_id}`).then((response)=>{
         if(response.data){
           console.log(response.data)
           this.setState({

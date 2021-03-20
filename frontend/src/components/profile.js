@@ -38,6 +38,37 @@ class profile extends Component {
         })
     }
 
+    onAvatarChange = (e) => {
+        this.setState({
+          file: e.target.files[0],
+          filename: e.target.files[0].name,
+        });
+    }
+
+    onUpload = async(e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('profile_image', this.state.file);
+        const uploadConfig = {
+          headers: {
+            'content-type': 'multipart/form-data',
+          },
+        };
+       await axios.post(`${apiHost}/api/imageupload/${this.state.user_id}`, formData, uploadConfig)
+      .then((response) => {
+        alert('Image uploaded successfully!');
+        this.setState({
+          filename: 'Choose your avatar',
+          profile_image: response.data.message,
+        });
+        console.log(this.state.profile_image);
+        // this.getUser();
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+    }
+
     submitProfile = (e) => {
         var headers = new Headers();
         //prevent page from refresh
@@ -68,30 +99,60 @@ class profile extends Component {
 
     //get the books data from backend  
     componentDidMount(){
-        axios.get(`${apiHost}/api/profile/${this.state.user_id}`).then((response) => {
-                //update the state with the response data
-                const profile = response.data
-                this.setState(
-                    profile );
-            });
+        this.getUserProfile();
+    }
+
+    getUserProfile= async()=>{
+        await axios.get(`${apiHost}/api/profile/${this.state.user_id}`).then((response) => {
+            //update the state with the response data
+            const profile = response.data
+            this.setState(
+                profile );
+        });
     }
 
     render()
     {
+        const filename= this.state.filename || 'Choose you Profile';
         if(this.state.message=="Changes_updated"){
             localStorage.setItem('username', this.state.username)
             return<Redirect to= "/home"/>
         }
+        let profile_image =null;
+        if (this.state) {
+            profile_image = `${apiHost}/api/imageupload/${this.state.profile_image}`;
+            console.log(profile_image);
+        }
+
         if(!cookie.load('cookie')){
             return <Redirect to= "/login"/>
         }
+        console.log(this.state.profile_image)
         return(
+           
         <div>
             <NavBar/>
         <Container>
             <Row>
             <Col xs={6} md={4}>
-                <Image src={SplitwiseImage} rounded />
+                
+                <Image style={{ width: '17rem' }} src={profile_image} />
+                <Form onSubmit={this.onUpload}>
+                <Form.Group as={Col} className="lg-3">
+                  <Form.File
+                    className="mt-3"
+                    name="profile_image"
+                    id="profile_image"
+                    style={{ width: '17rem' }}
+                    accept="image/*"
+                    label={filename}
+                    onChange={this.onAvatarChange}
+                    custom
+                  />
+                  <br />
+                  <Button type="submit">Upload</Button>
+                </Form.Group>
+              </Form>
             </Col>
             <Col>
                 <Form>

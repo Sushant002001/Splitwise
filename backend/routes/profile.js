@@ -51,8 +51,8 @@ router.put('/', (req, res) => {
     console.log('Inside profile put Request');
     console.log(req.body)
     
-    let sql = `CALL update_profile('${req.body.user_id}', '${req.body.username}', '${req.body.email_id}', '${req.body.phone}', '${req.body.currency}', '${req.body.language}', '${req.body.timezone}','${req.file.filename}');`;
-    var profile_pic = req.file.filename
+    let sql = `CALL update_profile('${req.body.user_id}', '${req.body.username}', '${req.body.email_id}', '${req.body.phone}', '${req.body.currency}', '${req.body.language}', '${req.body.timezone}');`;
+    //var profile_pic = req.file.filename
 
     pool.query(sql,(err, result) =>{
       if(err){
@@ -66,7 +66,6 @@ router.put('/', (req, res) => {
       if(result && result.length > 0 && result[0][0].status == 1){
         const returnObj={
           message: "Changes_update",
-          image: profile_pic
         }
         res.writeHead(200, {
             'Content-Type': 'text/plain'
