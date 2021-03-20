@@ -71,6 +71,8 @@ CREATE TABLE `bill_transaction` (
     FOREIGN KEY (`owed_user_id`) REFERENCES `users`(`user_id`)
 );
 
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
 
 
 DROP PROCEDURE IF EXISTS `get_login`;
@@ -415,84 +417,9 @@ END ;;
 DELIMITER ;
 
 
+---------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
 
-
-
-SELECT b.bill_id, 
-            b.bill_name,
-            b.bill_amount, 
-            g.group_name, 
-            b.bill_paid_by, 
-            paid_by.name as paid_by_name,
-            gu.user_id,
-            u.name,
-            CASE 
-                WHEN gu.user_id = b.bill_paid_by 
-                THEN 'GET' 
-                ELSE 'PAY' 
-            END AS pay_get, 
-            CASE 
-                WHEN gu.user_id = b.bill_paid_by 
-                THEN (b.bill_amount / gu_count.no_of_users) *  (gu_count.no_of_users - 1)
-                ELSE (b.bill_amount / (gu_count.no_of_users))
-            END AS split_amount,
-            b.bill_created_at
-    FROM bills b
-    LEFT JOIN groups g ON b.group_id = g.group_id
-    LEFT JOIN groups_users gu ON b.group_id = gu.group_id
-    LEFT JOIN users u ON gu.user_id = u.user_id 
-    LEFT JOIN (
-        SELECT count(user_id) AS no_of_users,
-                group_id
-        FROM groups_users gu
-        GROUP BY group_id
-    ) gu_count ON b.group_id = gu_count.group_id
-    LEFT JOIN (
-        SELECT DISTINCT b.bill_paid_by, 
-                u.name 
-        FROM users u JOIN bills b ON u.user_id = b.bill_paid_by
-    ) paid_by ON b.bill_paid_by = paid_by.bill_paid_by
-    WHERE u.user_id = _user_id
-    ORDER BY b.bill_created_at DESC ;
-
-
-
-    SELECT b.bill_id, 
-        b.bill_name, 
-        b.amount, 
-        g.group_name, 
-        b.user_paid_id, 
-        paid_by.user_name as paid_by_name,
-        gu.user_id,
-        u.user_name,
-        CASE 
-            WHEN gu.user_id = b.user_paid_id 
-            THEN 'GET' 
-            ELSE 'PAY' 
-        END AS pay_get, 
-        CASE 
-            WHEN gu.user_id = b.user_paid_id 
-            THEN (b.amount / gu_count.no_of_users) *  (gu_count.no_of_users - 1)
-            ELSE (b.amount / (gu_count.no_of_users))
-        END AS split_amount,
-        b.time_added
-    FROM bills b
-    LEFT JOIN groups g ON b.group_id = g.group_id
-    LEFT JOIN groups_users gu ON b.group_id = gu.group_id
-    LEFT JOIN users u ON gu.user_id = u.user_id 
-    LEFT JOIN (
-        SELECT count(user_id) AS no_of_users,
-                group_id
-        FROM groups_users gu
-        GROUP BY group_id
-    ) gu_count ON b.group_id = gu_count.group_id
-    LEFT JOIN (
-        SELECT DISTINCT b.user_paid_id, 
-                u.user_name 
-        FROM users u JOIN bills b ON u.user_id = b.user_paid_id
-    ) paid_by ON b.user_paid_id = paid_by.user_paid_id
-    WHERE u.user_id = _user_id
-    ORDER BY b.time_added DESC ;
 
 ----------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------
@@ -746,3 +673,4 @@ END ;;
 DELIMITER ;
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
